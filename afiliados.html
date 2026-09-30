@@ -56,7 +56,7 @@
         .btn-logout:hover { background: #ffeef0; }
 
         /* Main Content */
-        .main-content { flex: 1; margin-left: 250px; padding: 30px; transition: margin 0.3s; }
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; transition: margin 0.3s; min-width: 0; }
         .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .header-title h1 { font-size: 24px; font-weight: 700; }
         .header-title p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
@@ -66,7 +66,7 @@
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .metric-card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; transition: 0.2s; }
         .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-        .metric-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .metric-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
         .metric-icon.blue { background: #e7f0ff; color: var(--blue); }
         .metric-icon.yellow { background: #fff8e1; color: var(--accent-dark); }
         .metric-icon.green { background: #e6fff4; color: var(--green); }
@@ -110,6 +110,24 @@
         .rules-box h3 { color: var(--text-main); margin-bottom: 10px; font-size: 16px; }
         .rules-box ul { padding-left: 20px; }
 
+        /* Rewards Section */
+        .rewards-container { background: var(--bg-card); border: 1px solid var(--border); padding: 25px; border-radius: 12px; margin-bottom: 30px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .progress-header h3 { font-size: 16px; }
+        .progress-header span { font-size: 14px; font-weight: 700; color: var(--accent-dark); }
+        .progress-bar-bg { width: 100%; height: 24px; background: #f0f2f5; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: #000; font-size: 12px; font-weight: 700; transition: width 1s ease-in-out; width: 0%; }
+        .rewards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .reward-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; text-align: center; transition: 0.2s; position: relative; }
+        .reward-card.completed { border-color: var(--green); box-shadow: 0 0 15px rgba(0, 200, 83, 0.1); }
+        .reward-card img { width: 100%; height: 140px; object-fit: cover; }
+        .reward-info { padding: 15px; }
+        .reward-info h4 { font-size: 15px; margin-bottom: 5px; }
+        .reward-info p { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+        .reward-status { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: #f0f2f5; color: var(--text-muted); display: inline-block; }
+        .reward-card.completed .reward-status { background: #e6fff4; color: var(--green); }
+        .reward-notice { margin-top: 20px; padding: 15px; background: #fff8e1; border: 1px solid var(--accent); border-radius: 8px; color: var(--accent-dark); font-weight: 600; font-size: 14px; text-align: center; }
+
         /* WhatsApp Floating Button */
         .wa-fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 999; text-decoration: none; transition: transform 0.2s; }
         .wa-fab:hover { transform: scale(1.1); color: #fff; }
@@ -117,6 +135,7 @@
         /* Responsive */
         @media (max-width: 992px) {
             .grid-2-cols { grid-template-columns: 1fr; }
+            .rewards-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
@@ -129,6 +148,7 @@
             .table-toolbar { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
             .wa-fab { width: 50px; height: 50px; font-size: 24px; bottom: 20px; right: 20px; }
+            .rewards-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -156,6 +176,7 @@
             <nav class="sidebar-nav">
                 <a class="nav-item active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
                 <a class="nav-item" onclick="scrollToSection('sec-links'); setActiveNav(this)"><i class="fas fa-link"></i> Divulgação & PIX</a>
+                <a class="nav-item" onclick="scrollToSection('sec-rewards'); setActiveNav(this)"><i class="fas fa-trophy"></i> Premiações</a>
                 <a class="nav-item" onclick="scrollToSection('sec-clients'); setActiveNav(this)"><i class="fas fa-users"></i> Seus Clientes</a>
                 <a class="nav-item" onclick="scrollToSection('sec-history'); setActiveNav(this)"><i class="fas fa-history"></i> Pagamentos</a>
                 <a class="nav-item" onclick="scrollToSection('sec-rules'); setActiveNav(this)"><i class="fas fa-gavel"></i> Regras</a>
@@ -223,6 +244,28 @@
                 </div>
             </section>
 
+            <!-- Section: Rewards -->
+            <section id="sec-rewards">
+                <h2 class="section-title"><i class="fas fa-trophy" style="color: var(--accent-dark); font-size: 18px;"></i> Premiações por Volume</h2>
+                <div class="rewards-container">
+                    <div class="progress-header">
+                        <h3>Progresso da Próxima Meta:</h3>
+                        <span id="nextTierText">Carregando...</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progressBarFill">0%</div>
+                    </div>
+                    
+                    <div class="rewards-grid" id="rewardsGrid">
+                        <!-- Cards gerados via JS -->
+                    </div>
+
+                    <div class="reward-notice">
+                        <i class="fas fa-info-circle"></i> Ao bater a meta, fale com o seu gerente para resgatar seu prêmio!
+                    </div>
+                </div>
+            </section>
+
             <!-- Section: Clients -->
             <section id="sec-clients">
                 <h2 class="section-title"><i class="fas fa-user-friends" style="color: var(--blue); font-size: 18px;"></i> Seus Clientes</h2>
@@ -286,7 +329,7 @@
     </a>
 
     <script>
-        // FUNÇÕES DE UI (NÃO AFETAM A LÓGICA DE NEGÓCIO)
+        // FUNÇÕES DE UI
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
@@ -345,7 +388,7 @@
                 if (netLoss > 0) totalNetLoss += netLoss;
             });
             
-            // Calcula Saldo a Receber e Total Já Recebido (Em tempo real)
+            // Calcula Saldo a Receber e Total Já Recebido
             let dynamicEarned = totalNetLoss * (rate / 100);
             let totalPaid = affUser.totalPaid || 0;
             let pendingComm = dynamicEarned - totalPaid;
@@ -377,7 +420,63 @@
                 document.getElementById('affDateDisplay').innerText = affUser.paymentDate ? new Date(affUser.paymentDate+'T00:00:00').toLocaleDateString('pt-BR') : 'A definir pela administração';
             }
 
+            // NOVO: Renderiza Premiações
+            renderRewards(totalDep);
+
             renderClients();
+        }
+
+        // NOVA FUNÇÃO: Premiações
+        function renderRewards(totalDepVolume) {
+            const tiers = [
+                { target: 100000, name: 'Notebook Dell', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b39a853?auto=format&fit=crop&w=400&q=80' },
+                { target: 300000, name: 'iPhone 15 Pro', img: 'https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=400&q=80' },
+                { target: 500000, name: 'Moto 0km', img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=400&q=80' },
+                { target: 1000000, name: 'Carro 0km', img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=400&q=80' }
+            ];
+
+            let grid = document.getElementById('rewardsGrid');
+            grid.innerHTML = '';
+
+            // Descobrir qual a próxima meta
+            let nextTierIndex = tiers.findIndex(t => totalDepVolume < t.target);
+            let currentTarget = nextTierIndex !== -1 ? tiers[nextTierIndex] : null;
+            let prevTarget = nextTierIndex > 0 ? tiers[nextTierIndex - 1].target : 0;
+
+            // Atualizar barra de progresso
+            let progressBar = document.getElementById('progressBarFill');
+            let progressText = document.getElementById('nextTierText');
+            
+            if (currentTarget) {
+                let progress = ((totalDepVolume - prevTarget) / (currentTarget.target - prevTarget)) * 100;
+                if (progress > 100) progress = 100;
+                if (progress < 0) progress = 0;
+                progressBar.style.width = progress.toFixed(1) + '%';
+                progressBar.innerText = progress.toFixed(1) + '%';
+                progressText.innerText = `Faltam R$ ${(currentTarget.target - totalDepVolume).toLocaleString('pt-BR', {minimumFractionDigits: 2})} para ganhar um ${currentTarget.name}`;
+            } else {
+                progressBar.style.width = '100%';
+                progressBar.innerText = '100%';
+                progressText.innerText = 'Parabéns! Você bateu todas as metas!';
+            }
+
+            // Renderizar cards
+            tiers.forEach(tier => {
+                let isCompleted = totalDepVolume >= tier.target;
+                let cardClass = isCompleted ? 'reward-card completed' : 'reward-card';
+                let statusText = isCompleted ? 'Meta Concluída!' : `Meta: R$ ${tier.target.toLocaleString('pt-BR')}`;
+                
+                grid.innerHTML += `
+                    <div class="${cardClass}">
+                        <img src="${tier.img}" alt="${tier.name}">
+                        <div class="reward-info">
+                            <h4>${tier.name}</h4>
+                            <p>Volume: R$ ${tier.target.toLocaleString('pt-BR')}</p>
+                            <span class="reward-status">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function savePix() {
