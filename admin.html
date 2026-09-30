@@ -1038,23 +1038,44 @@
             if (aff) { aff.paymentDate = date; localStorage.setItem('bynex_users', JSON.stringify(users)); loadAdminData(); }
         }
 
-                function payAffiliate(affId) {
-            if (!confirm('Confirmar o pagamento deste afiliado? O valor será quitado e registrado no histórico dele.')) return;
+
+
+        
+                        function payAffiliate(affId) {
+            if (!confirm('Confirmar o pagamento deste afiliado? O valor será quitado e registrado no histórico.')) return;
+            
             let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            
             let aff = users.find(u => u.id === affId);
             if (aff) {
-                let pendingComm = (aff.totalEarned || 0) - (aff.totalPaid || 0);
+                // Calcula o valor exato em tempo real igual a tabela faz
+                let myClients = users.filter(u => u.referredBy === affId);
+                let totalNetLoss = 0;
+                myClients.forEach(c => {
+                    let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
+                    let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
+                    let netLoss = (cDep - cWd) - (c.balance || 0);
+                    if (netLoss > 0) totalNetLoss += netLoss;
+                });
+                
+                let rate = aff.commissionRate || 50;
+                let dynamicEarned = totalNetLoss * (rate / 100);
+                let pendingComm = dynamicEarned - (aff.totalPaid || 0);
+                
                 if (pendingComm > 0) {
-                    aff.totalPaid = (aff.totalPaid || 0) + pendingComm;
+                    aff.totalPaid = (aff.totalPaid || 0) + pendingComm; // Soma o valor pago ao total já recebido
                     if (!aff.paymentHistory) aff.paymentHistory = [];
-                    aff.paymentHistory.push({ date: new Date().toLocaleString('pt-BR'), amount: pendingComm });
+                    aff.paymentHistory.push({ date: new Date().toLocaleString('pt-BR'), amount: pendingComm }); // Salva no histórico
+                    aff.paymentDate = ''; 
+                    localStorage.setItem('bynex_users', JSON.stringify(users));
+                    loadAdminData();
+                } else {
+                    alert('Não há valor em aberto para este afiliado.');
                 }
-                aff.paymentDate = ''; 
-                localStorage.setItem('bynex_users', JSON.stringify(users));
-                loadAdminData();
             }
         }
-
 
 
 
