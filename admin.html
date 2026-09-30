@@ -474,6 +474,9 @@
                 document.getElementById('loginArea').style.display = 'none';
                 document.getElementById('adminArea').style.display = 'block';
                 loadAdminData();
+                
+                // FORÇA O CAMPO DE BUSCA COMEÇAR VAZIO (IGNORA O AUTOFILL DO NAVEGADOR)
+                document.getElementById('searchUsers').value = '';
             }
         };
 
