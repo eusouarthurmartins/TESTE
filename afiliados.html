@@ -140,6 +140,13 @@
         .reward-card.completed .reward-status { background: #e6fff4; color: var(--green); }
         .reward-notice { margin-top: 15px; padding: 10px; background: #fff8e1; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent-dark); font-weight: 600; font-size: 12px; text-align: center; }
 
+        /* Pagination */
+        .pagination { display: flex; gap: 5px; justify-content: center; align-items: center; padding: 10px 0; flex-wrap: wrap; }
+        .page-btn { background: var(--bg-light); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .page-btn:hover:not(:disabled) { background: #f7f9fa; }
+        .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
         /* WhatsApp Floating Button */
         .wa-fab { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background-color: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 999; text-decoration: none; transition: transform 0.2s; }
         .wa-fab:hover { transform: scale(1.1); color: #fff; }
@@ -155,7 +162,7 @@
             .hamburger { display: block; }
             .close-sidebar { display: block; }
             .header-title h1 { font-size: 18px; }
-            .header-profile { display: none; } /* Esconde no mobile para caber hamburger + titulo */
+            .header-profile { display: none; } 
             .table-toolbar { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
         }
@@ -273,7 +280,7 @@
                     </div>
                     
                     <div class="rewards-grid" id="rewardsGrid">
-                        <!-- Cards gerados via JS -->
+                        <!-- Cards gerado via JS -->
                     </div>
 
                     <div class="reward-notice">
@@ -295,6 +302,7 @@
                             <tbody id="clientsBody"></tbody>
                         </table>
                     </div>
+                    <div class="pagination" id="clientsPagination"></div>
                 </div>
             </section>
 
@@ -310,6 +318,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="pagination" id="historyPagination"></div>
                 </div>
             </section>
 
@@ -345,7 +354,7 @@
     </a>
 
     <script>
-        // FUNÇÕES DE UI (NÃO AFETAM LÓGICA)
+        // FUNÇÕES DE UI
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
@@ -360,6 +369,9 @@
 
         // LÓGICA ORIGINAL INTACTA
         let currentAffId = '';
+        const itemsPerPage = 10;
+        let currentClientPage = 1;
+        let currentHistoryPage = 1;
 
         function checkAffiliate() {
             let id = document.getElementById('affId').value.trim();
@@ -369,7 +381,7 @@
                 localStorage.setItem('bynex_aff_session', id);
                 document.getElementById('loginArea').style.display = 'none';
                 document.getElementById('adminArea').style.display = 'flex';
-                document.getElementById('headerAffId').innerText = 'ID: ' + id; // Atualiza ID no topo
+                document.getElementById('headerAffId').innerText = 'ID: ' + id;
                 loadAffData();
             } else {
                 alert('ID de afiliado não encontrado!');
@@ -405,7 +417,6 @@
                 if (netLoss > 0) totalNetLoss += netLoss;
             });
             
-            // Calcula Saldo a Receber e Total Já Recebido (Em tempo real)
             let dynamicEarned = totalNetLoss * (rate / 100);
             let totalPaid = affUser.totalPaid || 0;
             let pendingComm = dynamicEarned - totalPaid;
@@ -416,11 +427,16 @@
             document.getElementById('mPending').innerText = pendingComm.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('mTotalReceived').innerText = totalPaid.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            // Renderiza Histórico de Pagamentos
+            // Renderiza Histórico de Pagamentos (Com Paginação)
             let historyBody = document.getElementById('historyBody');
-            if (affUser.paymentHistory && affUser.paymentHistory.length > 0) {
+            let historyData = (affUser.paymentHistory || []).reverse();
+            let totalHistoryPages = Math.ceil(historyData.length / itemsPerPage) || 1;
+            if(currentHistoryPage > totalHistoryPages) currentHistoryPage = totalHistoryPages;
+            let pageHistoryItems = historyData.slice((currentHistoryPage - 1) * itemsPerPage, currentHistoryPage * itemsPerPage);
+
+            if (pageHistoryItems.length > 0) {
                 historyBody.innerHTML = '';
-                affUser.paymentHistory.reverse().forEach(p => {
+                pageHistoryItems.forEach(p => {
                     historyBody.innerHTML += `<tr>
                         <td>${p.date}</td>
                         <td style="color: var(--green); font-weight: 700;">+ R$ ${p.amount.toFixed(2)}</td>
@@ -430,6 +446,7 @@
             } else {
                 historyBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 15px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>';
             }
+            renderPagination('history', currentHistoryPage, totalHistoryPages);
 
             if (affUser) {
                 document.getElementById('affPixDisplay').innerText = affUser.pixKey ? affUser.pixKey : 'Não cadastrada';
@@ -437,13 +454,10 @@
                 document.getElementById('affDateDisplay').innerText = affUser.paymentDate ? new Date(affUser.paymentDate+'T00:00:00').toLocaleDateString('pt-BR') : 'A definir pela administração';
             }
 
-            // Renderiza Premiações
             renderRewards(totalDep);
-
             renderClients();
         }
 
-        // FUNÇÃO DE PREMIAÇÕES ATUALIZADA
         function renderRewards(totalDepVolume) {
             const tiers = [
                 { target: 100000, name: 'Notebook Dell', tier: 'Bronze', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b39a853?auto=format&fit=crop&w=100&q=80' },
@@ -455,12 +469,10 @@
             let grid = document.getElementById('rewardsGrid');
             grid.innerHTML = '';
 
-            // Descobrir qual a próxima meta
             let nextTierIndex = tiers.findIndex(t => totalDepVolume < t.target);
             let currentTarget = nextTierIndex !== -1 ? tiers[nextTierIndex] : null;
             let prevTarget = nextTierIndex > 0 ? tiers[nextTierIndex - 1].target : 0;
 
-            // Atualizar barra de progresso
             let progressBar = document.getElementById('progressBarFill');
             let progressText = document.getElementById('nextTierText');
             
@@ -477,7 +489,6 @@
                 progressText.innerText = 'Parabéns! Você bateu todas as metas!';
             }
 
-            // Renderizar cards compactos
             tiers.forEach(tier => {
                 let isCompleted = totalDepVolume >= tier.target;
                 let cardClass = isCompleted ? 'reward-card completed' : 'reward-card';
@@ -521,24 +532,57 @@
             let myClients = users.filter(u => u.referredBy === currentAffId && (u.id.toLowerCase().includes(query) || u.name.toLowerCase().includes(query)));
             
             let body = document.getElementById('clientsBody');
-            if (myClients.length === 0) { body.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 15px; color: var(--text-muted);">Nenhum cliente encontrado.</td></tr>'; return; }
+            let totalPages = Math.ceil(myClients.length / itemsPerPage) || 1;
+            if(currentClientPage > totalPages) currentClientPage = totalPages;
+            let pageItems = myClients.slice((currentClientPage - 1) * itemsPerPage, currentClientPage * itemsPerPage);
 
-            body.innerHTML = '';
-            myClients.forEach(c => {
-                let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
-                let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
-                let netLoss = (cDep - cWd) - (c.balance || 0);
-                let isProfit = netLoss < 0;
-                let displayNetLoss = isProfit ? 'R$ 0,00' : netLoss.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                let comm = (isProfit ? 0 : netLoss * (rate / 100));
+            if (pageItems.length === 0) { 
+                body.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 15px; color: var(--text-muted);">Nenhum cliente encontrado.</td></tr>'; 
+            } else {
+                body.innerHTML = '';
+                pageItems.forEach(c => {
+                    let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
+                    let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
+                    let netLoss = (cDep - cWd) - (c.balance || 0);
+                    let isProfit = netLoss < 0;
+                    let displayNetLoss = isProfit ? 'R$ 0,00' : netLoss.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    let comm = (isProfit ? 0 : netLoss * (rate / 100));
 
-                body.innerHTML += `<tr>
-                    <td>${c.id}</td><td>${c.name}</td>
-                    <td>R$ ${cDep.toFixed(2)}</td><td>R$ ${cWd.toFixed(2)}</td><td>R$ ${(c.balance || 0).toFixed(2)}</td>
-                    <td><span class="badge ${isProfit ? 'badge-positive' : 'badge-negative'}">${displayNetLoss}</span></td>
-                    <td>R$ ${comm.toFixed(2)}</td>
-                </tr>`;
-            });
+                    body.innerHTML += `<tr>
+                        <td>${c.id}</td><td>${c.name}</td>
+                        <td>R$ ${cDep.toFixed(2)}</td><td>R$ ${cWd.toFixed(2)}</td><td>R$ ${(c.balance || 0).toFixed(2)}</td>
+                        <td><span class="badge ${isProfit ? 'badge-positive' : 'badge-negative'}">${displayNetLoss}</span></td>
+                        <td>R$ ${comm.toFixed(2)}</td>
+                    </tr>`;
+                });
+            }
+            renderPagination('clients', currentClientPage, totalPages);
+        }
+
+        function renderPagination(type, currentPage, totalPages) {
+            let containerId = type === 'clients' ? 'clientsPagination' : 'historyPagination';
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if (totalPages <= 1) return;
+            
+            container.insertAdjacentHTML('beforeend', `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage - 1})">Anterior</button>`);
+            
+            for (let i = 1; i <= totalPages; i++) {
+                let activeClass = i === currentPage ? 'active' : '';
+                container.insertAdjacentHTML('beforeend', `<button class="page-btn ${activeClass}" onclick="changePage('${type}', ${i})">${i}</button>`);
+            }
+            
+            container.insertAdjacentHTML('beforeend', `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage + 1})">Próximo</button>`);
+        }
+
+        function changePage(type, page) {
+            if (type === 'clients') {
+                currentClientPage = page;
+                renderClients();
+            } else {
+                currentHistoryPage = page;
+                loadAffData(); 
+            }
         }
 
         function copyLink() {
