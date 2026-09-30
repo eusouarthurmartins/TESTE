@@ -15,7 +15,7 @@
     <meta property="og:image" content="https://dummyimage.com/1200x630/0b0e11/f0b90b&text=BYNEX+PRO">
     <meta property="og:type" content="website">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { 
@@ -28,187 +28,148 @@
             --border: #e3e5e8; 
             --green: #00c853; 
             --red: #ff3d57; 
+            --blue: #1877f2;
+            --bg-sidebar: #0b0e11;
+            --bg-sidebar-hover: #151a21;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; }
+        body { background-color: var(--bg-light); color: var(--text-main); overflow-x: hidden; font-size: 14px; }
 
-        body { background-color: var(--bg-light); color: var(--text-main); }
+        /* App Layout */
+        .app-layout { display: flex; min-height: 100vh; }
 
-        /* Header */
-        .admin-header {
-            background: var(--bg-card);
-            padding: 12px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .admin-logo { font-weight: 800; font-size: 20px; color: var(--text-main); }
-        .admin-logo span { color: var(--accent); }
-        .btn-logout { background: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--red); }
-        .btn-logout:hover { background: #ffeef0; }
+        /* Sidebar */
+        .sidebar { width: 240px; background: var(--bg-sidebar); color: #848e9c; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #151a21; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-logo { font-weight: 800; font-size: 20px; color: #fff; } .sidebar-logo span { color: var(--accent); }
+        .close-sidebar { display: none; background: none; border: none; color: #848e9c; font-size: 18px; cursor: pointer; }
+        .sidebar-nav { flex: 1; padding: 15px 0; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #848e9c; text-decoration: none; font-size: 13px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; cursor: pointer; }
+        .nav-item i { width: 16px; text-align: center; font-size: 14px; }
+        .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
+        .nav-item.active { background: var(--bg-sidebar-hover); color: var(--accent); border-left-color: var(--accent); }
+        .sidebar-footer { padding: 15px 20px; border-top: 1px solid #151a21; }
+        .btn-side-logout { width: 100%; padding: 8px; background: #151a21; border: 1px solid #2b313a; border-radius: 6px; color: var(--red); font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-side-logout:hover { background: #ff3d5715; }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 240px; padding: 25px; min-width: 0; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: var(--bg-card); padding: 15px 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .header-title h1 { font-size: 18px; font-weight: 700; }
+        .header-title p { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+        .hamburger { display: none; background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-header { background: none; border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-refresh { color: var(--blue); border-color: #e7f0ff; background: #f0f6ff; }
+        .btn-refresh:hover { background: #e7f0ff; }
+        .btn-reset { color: var(--red); border-color: #ffeef0; background: #fff5f6; }
+        .btn-reset:hover { background: #ffeef0; }
 
         /* Login Area */
-        .login-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--bg-light);
-        }
-        .login-card {
-            background: var(--bg-card);
-            padding: 40px;
-            border-radius: 20px;
-            width: 400px;
-            max-width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            text-align: center;
-        }
+        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-sidebar); }
+        .login-card { background: var(--bg-card); padding: 40px; border-radius: 12px; width: 400px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; }
         .login-card h1 { font-size: 22px; margin-bottom: 20px; }
-        .input-pass { width: 100%; padding: 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; outline: none; }
-        .input-pass:focus { border-color: var(--accent); }
-        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .input-pass { width: 100%; padding: 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 15px; outline: none; transition: 0.2s; }
+        .input-pass:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.1); }
+        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s; }
         .btn-pass:hover { background: var(--accent-dark); }
 
-        /* Admin Container */
-        .admin-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
-
-        /* Metric Cards */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .metric-card {
-            background: var(--bg-card);
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .metric-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .metric-icon.blue { background: #e7f0ff; color: #1877f2; }
+        /* Dashboard Metrics */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .metric-card { background: var(--bg-card); padding: 15px 20px; border-radius: 10px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .metric-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .metric-icon.blue { background: #e7f0ff; color: var(--blue); }
         .metric-icon.yellow { background: #fff8e1; color: var(--accent-dark); }
         .metric-icon.green { background: #e6fff4; color: var(--green); }
         .metric-icon.red { background: #ffeef0; color: var(--red); }
-        .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 2px; }
-        .metric-info h3 { font-size: 18px; }
+        .metric-info span { display: block; color: var(--text-muted); font-size: 11px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .metric-info h3 { font-size: 18px; font-weight: 700; }
 
         /* Sections */
-        .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 16px; font-weight: 700; margin: 30px 0 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title i { font-size: 15px; }
 
-        /* Toolbar (Search) */
-        .table-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            gap: 15px;
-        }
+        /* Tables */
+        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 15px; }
         .search-box { position: relative; flex: 1; max-width: 300px; }
-        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
-        .search-box input:focus { border-color: var(--accent); }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; transition: 0.2s; }
+        .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.1); }
         .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
 
-        .table-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
+        .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f7f9fa; padding: 10px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        th { background: #f7f9fa; padding: 10px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; letter-spacing: 0.3px; }
         td { padding: 10px 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
         tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f9fbfa; }
 
-        /* Status Badges */
+        /* Badges */
         .badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
         .badge-pending { background: #fff8e1; color: var(--accent-dark); }
         .badge-approved { background: #e6fff4; color: var(--green); }
         .badge-rejected { background: #ffeef0; color: var(--red); }
-
-        /* Action Buttons */
-        .btn { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; transition: 0.2s; }
-        .btn-approve { background: var(--green); color: #fff; }
-        .btn-approve:hover { background: #00b347; }
-        .btn-reject { background: var(--red); color: #fff; }
-        .btn-reject:hover { background: #e63950; }
-                .btn-add { background: var(--accent); color: #000; padding: 6px 8px; }
-        .btn-block { background: var(--text-muted); color: #fff; }
-        .btn-delete { background: var(--red); color: #fff; }
-        .btn-reset-user { background: var(--accent-dark); color: #000; }
         .badge-vip { background: #fff8e1; color: #d9a700; }
         .badge-mkt { background: #e7f0ff; color: #1877f2; }
         .badge-real { background: #e6fff4; color: #00c853; }
         .badge-blocked { background: #ffeef0; color: var(--red); }
-        .type-select { padding: 4px; border-radius: 6px; border: 1px solid var(--border); background: #f7f9fa; font-size: 12px; outline: none; }
-        .user-actions { display: flex; gap: 4px; }
-        .report-toolbar { background: var(--bg-card); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .report-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-        .btn-report { background: var(--bg-light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-report:hover { background: var(--accent); color: #000; border-color: var(--accent); }
-
-
-
-
-
-        .btn-pay-aff { background: var(--green); color: #fff; }
         .badge-aff-pending { background: #fff8e1; color: var(--accent-dark); }
         .badge-aff-paid { background: #e6fff4; color: var(--green); }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        .proof-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); }
-
-        .add-balance-input { width: 70px; padding: 6px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; }
+        /* Buttons */
+        .btn { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-approve { background: var(--green); color: #fff; } .btn-approve:hover { background: #00b347; }
+        .btn-reject { background: var(--red); color: #fff; } .btn-reject:hover { background: #e63950; }
+        .btn-add { background: var(--accent); color: #000; padding: 6px 8px; } .btn-add:hover { background: var(--accent-dark); }
+        .btn-block { background: var(--text-muted); color: #fff; } .btn-block:hover { opacity: 0.9; }
+        .btn-delete { background: var(--red); color: #fff; } .btn-delete:hover { opacity: 0.9; }
+        .btn-reset-user { background: var(--accent-dark); color: #000; } .btn-reset-user:hover { opacity: 0.9; }
+        .btn-pay-aff { background: var(--green); color: #fff; padding: 6px 12px; } .btn-pay-aff:hover { background: #00b347; }
+        
+        .type-select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: #f7f9fa; font-size: 12px; outline: none; cursor: pointer; }
+        .user-actions { display: flex; gap: 4px; }
+        .proof-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .proof-img:hover { transform: scale(1.05); border-color: var(--accent); }
+        .add-balance-input { width: 70px; padding: 6px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; outline: none; }
         .add-balance-form { display: flex; gap: 5px; align-items: center; }
+
+        /* Reports */
+        .report-toolbar { background: var(--bg-card); border: 1px solid var(--border); padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .report-toolbar h3 { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .report-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-report { background: var(--bg-light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .btn-report:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 
         /* Pagination */
         .pagination { display: flex; gap: 5px; justify-content: center; align-items: center; padding: 10px 0; flex-wrap: wrap; }
-        .page-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
-        .page-btn:hover:not(:disabled) { background: #f7f9fa; }
+        .page-btn { background: var(--bg-light); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .page-btn:hover:not(:disabled) { background: #e7f0ff; border-color: var(--blue); color: var(--blue); }
         .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
         /* Image Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-overlay.show { display: flex; }
         .modal-content { position: relative; max-width: 90%; max-height: 90%; }
         .modal-content img { max-width: 100%; max-height: 90vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .close-modal {
-            position: absolute; top: -40px; right: 0;
-            background: #fff; color: #000; border: none; width: 36px; height: 36px;
-            border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .close-modal { position: absolute; top: -40px; right: 0; background: #fff; color: #000; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
+        /* Responsive */
+        @media (max-width: 992px) {
+            .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+        }
         @media (max-width: 768px) {
-            .admin-container { padding: 20px 15px; }
-            .admin-header { padding: 12px 20px; }
+            .sidebar { transform: translateX(-100%); width: 260px; }
+            .sidebar.active { transform: translateX(0); box-shadow: 0 0 50px rgba(0,0,0,0.3); }
+            .main-content { margin-left: 0; padding: 15px; }
+            .hamburger { display: block; }
+            .close-sidebar { display: block; }
+            .header-title h1 { font-size: 16px; }
+            .header-title p { display: none; }
+            .header-actions .btn-text { display: none; } 
+            .btn-header { padding: 8px 10px; }
             .table-toolbar { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
         }
@@ -219,7 +180,7 @@
     <!-- Tela de Login do Admin -->
     <div id="loginArea" class="login-area">
         <div class="login-card">
-            <div class="admin-logo" style="margin-bottom: 20px;">BYNEX <span>PRO ADMIN</span></div>
+            <div class="sidebar-logo" style="margin-bottom: 20px; text-align: center;">BYNEX <span>PRO ADMIN</span></div>
             <h1>Painel Restrito</h1>
             <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Digite a senha mestra para acessar o sistema.</p>
             <input type="password" class="input-pass" id="adminPass" placeholder="Senha Mestra" onkeyup="if(event.key==='Enter') checkAdmin()">
@@ -229,249 +190,222 @@
 
     <!-- Area do Painel Admin -->
     <div id="adminArea" style="display:none;">
-        <header class="admin-header">
-            <div class="admin-logo">BYNEX <span>PRO</span></div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button class="btn-logout" style="color: #1877f2; border-color: #1877f2;" onclick="loadAdminData()" title="Atualizar Dados"><i class="fas fa-sync-alt"></i> Atualizar</button>
-                <button class="btn-logout" style="color: var(--red);" onclick="resetSystem()" title="Apagar todos os dados"><i class="fas fa-trash-alt"></i> Resetar Tudo</button>
-                <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Sair</button>
-            </div>
-        </header>
-
-        <div class="admin-container">
-                        <!-- Métricas Rápidas -->
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-icon blue"><i class="fas fa-users"></i></div>
-                    <div class="metric-info">
-                        <span>Total de Usuários</span>
-                        <h3 id="totalUsers">0</h3>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon yellow"><i class="fas fa-clock"></i></div>
-                    <div class="metric-info">
-                        <span>Depósitos Pendentes</span>
-                        <h3 id="totalDepPending">0</h3>
-                    </div>
-                </div>
-                <!-- NOVO: Depósitos Reais (Aprovados) -->
-                <div class="metric-card">
-                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
-                    <div class="metric-info">
-                        <span>Depósitos Reais (Aprovados)</span>
-                        <h3 id="totalDepApprovedAmount">R$ 0,00</h3>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon red"><i class="fas fa-hand-holding-usd"></i></div>
-                    <div class="metric-info">
-                        <span>Saques Pendentes</span>
-                        <h3 id="totalWdPending">0</h3>
-                    </div>
-                </div>
-                <!-- NOVO: Saques Aprovados -->
-                <div class="metric-card">
-                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
-                    <div class="metric-info">
-                        <span>Saques Aprovados</span>
-                        <h3 id="totalWdApproved">0</h3>
-                    </div>
-                </div>
-                <!-- NOVO: Saques Rejeitados -->
-                <div class="metric-card">
-                    <div class="metric-icon red"><i class="fas fa-times-circle"></i></div>
-                    <div class="metric-info">
-                        <span>Saques Rejeitados</span>
-                        <h3 id="totalWdRejected">0</h3>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
-                    <div class="metric-info">
-                        <span>Saldo Total em Contas</span>
-                        <h3 id="totalBalance">R$ 0,00</h3>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-                <!-- NOVOS CARTÕES DE AFILIADOS -->
-                <div class="metric-card">
-                    <div class="metric-icon yellow"><i class="fas fa-handshake"></i></div>
-                    <div class="metric-info">
-                        <span>Afiliados: Total Em Aberto</span>
-                        <h3 id="totalAffPending">R$ 0,00</h3>
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
-                    <div class="metric-info">
-                        <span>Afiliados: Total Já Pago</span>
-                        <h3 id="totalAffPaid">R$ 0,00</h3>
-                    </div>
-                </div>
-
+        <div class="app-layout">
             
-
-
-
-
-
-
-
-
-
-
-
-            <!-- NOVO: Menu de Relatórios -->
-            <div class="report-toolbar">
-                <h3 style="font-size: 16px;"><i class="fas fa-file-alt" style="color: var(--accent-dark);"></i> Relatórios para Impressão</h3>
-                <div class="report-btns">
-                    <button class="btn-report" onclick="printReport('today')">Hoje</button>
-                    <button class="btn-report" onclick="printReport('week')">Semana</button>
-                    <button class="btn-report" onclick="printReport('month')">Mês</button>
-                    <button class="btn-report" onclick="printReport('all')">Tudo</button>
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">BYNEX <span>PRO</span></div>
+                    <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
                 </div>
-            </div>
-
-            <!-- Tabela de Depósitos -->
-            <h2 class="section-title"><i class="fas fa-file-invoice-dollar" style="color: var(--accent-dark); font-size: 16px;"></i> Depósitos</h2>
-            <div class="table-toolbar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchDeposits" placeholder="Buscar por ID ou Usuário..." oninput="applyFilters()">
+                <nav class="sidebar-nav">
+                    <a class="nav-item active" onclick="scrollToSection('sec-dashboard'); setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-reports'); setActiveNav(this)"><i class="fas fa-file-alt"></i> Relatórios</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-deposits'); setActiveNav(this)"><i class="fas fa-file-invoice-dollar"></i> Depósitos</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-withdrawals'); setActiveNav(this)"><i class="fas fa-money-bill-transfer"></i> Saques</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-users'); setActiveNav(this)"><i class="fas fa-user-friends"></i> Usuários</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-affiliates'); setActiveNav(this)"><i class="fas fa-handshake"></i> Afiliados</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button class="btn-side-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Sair da Conta</button>
                 </div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Depósito</th>
-                                <th>ID Usuário</th>
-                                <th>Valor</th>
-                                <th>Comprovante</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="depositsBody"></tbody>
-                    </table>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <header class="main-header">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                        <div class="header-title">
+                            <h1>Painel Administrativo</h1>
+                            <p>Gerencie usuários, finanças e afiliados.</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-header btn-refresh" onclick="loadAdminData()" title="Atualizar Dados"><i class="fas fa-sync-alt"></i> <span class="btn-text">Atualizar</span></button>
+                        <button class="btn-header btn-reset" onclick="resetSystem()" title="Apagar todos os dados"><i class="fas fa-trash-alt"></i> <span class="btn-text">Resetar Tudo</span></button>
+                    </div>
+                </header>
+
+                <!-- Section: Dashboard -->
+                <section id="sec-dashboard">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+                            <div class="metric-info"><span>Total de Usuários</span><h3 id="totalUsers">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon yellow"><i class="fas fa-clock"></i></div>
+                            <div class="metric-info"><span>Depósitos Pendentes</span><h3 id="totalDepPending">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="metric-info"><span>Depósitos Reais (Aprovados)</span><h3 id="totalDepApprovedAmount">R$ 0,00</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon red"><i class="fas fa-hand-holding-usd"></i></div>
+                            <div class="metric-info"><span>Saques Pendentes</span><h3 id="totalWdPending">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="metric-info"><span>Saques Aprovados</span><h3 id="totalWdApproved">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon red"><i class="fas fa-times-circle"></i></div>
+                            <div class="metric-info"><span>Saques Rejeitados</span><h3 id="totalWdRejected">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="metric-info"><span>Saldo Total em Contas</span><h3 id="totalBalance">R$ 0,00</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon yellow"><i class="fas fa-handshake"></i></div>
+                            <div class="metric-info"><span>Afiliados: Total Em Aberto</span><h3 id="totalAffPending">R$ 0,00</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                            <div class="metric-info"><span>Afiliados: Total Já Pago</span><h3 id="totalAffPaid">R$ 0,00</h3></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Reports -->
+                <section id="sec-reports">
+                    <div class="report-toolbar">
+                        <h3><i class="fas fa-file-alt" style="color: var(--accent-dark);"></i> Relatórios para Impressão</h3>
+                        <div class="report-btns">
+                            <button class="btn-report" onclick="printReport('today')">Hoje</button>
+                            <button class="btn-report" onclick="printReport('week')">Semana</button>
+                            <button class="btn-report" onclick="printReport('month')">Mês</button>
+                            <button class="btn-report" onclick="printReport('all')">Tudo</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Deposits -->
+                <section id="sec-deposits">
+                    <h2 class="section-title"><i class="fas fa-file-invoice-dollar" style="color: var(--accent-dark);"></i> Depósitos</h2>
+                    <div class="table-toolbar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchDeposits" placeholder="Buscar por ID ou Usuário..." oninput="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Depósito</th>
+                                        <th>ID Usuário</th>
+                                        <th>Valor</th>
+                                        <th>Comprovante</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="depositsBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="depositsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- Section: Withdrawals -->
+                <section id="sec-withdrawals">
+                    <h2 class="section-title"><i class="fas fa-money-bill-transfer" style="color: var(--red);"></i> Saques</h2>
+                    <div class="table-toolbar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchWithdrawals" placeholder="Buscar por ID, Usuário ou Chave PIX..." oninput="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Saque</th>
+                                        <th>ID Usuário</th>
+                                        <th>Valor</th>
+                                        <th>Chave PIX / Titular</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="withdrawalsBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="withdrawalsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- Section: Users -->
+                <section id="sec-users">
+                    <h2 class="section-title"><i class="fas fa-user-friends" style="color: #1877f2;"></i> Usuários Cadastrados</h2>
+                    <div class="table-toolbar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchUsers" placeholder="Buscar por ID, Nome ou E-mail..." oninput="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Usuário</th>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th>Tipo de Conta</th>
+                                        <th>Saldo Atual</th>
+                                        <th>Total Depósitos</th>
+                                        <th>Adicionar Saldo</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="usersPagination"></div>
+                    </div>
+                </section>
+
+                <!-- Section: Affiliates -->
+                <section id="sec-affiliates">
+                    <h2 class="section-title"><i class="fas fa-handshake" style="color: #d9a700;"></i> Gestão de Afiliados</h2>
+                    <div class="table-toolbar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchAffiliates" placeholder="Buscar Afiliado por ID ou Nome..." oninput="applyFilters()">
+                        </div>
+                    </div>
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Afiliado</th>
+                                        <th>Nome</th>
+                                        <th>Clientes (FTDs)</th>
+                                        <th>Volume PNL</th>
+                                        <th>Prejuízo dos Clientes</th>
+                                        <th>Comissão (50%)</th>
+                                        <th>CHAVE PIX</th>
+                                        <th>Data Pgto</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="affiliatesBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="affiliatesPagination"></div>
+                    </div>
+                </section>
+                
+                <div style="margin-top: 30px; text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    BYNEX PRO ADMIN &copy; 2024 - Sistema de Gestão
                 </div>
-                <div class="pagination" id="depositsPagination"></div>
-            </div>
-
-            <!-- NOVO: Tabela de Saques -->
-            <h2 class="section-title"><i class="fas fa-money-bill-transfer" style="color: var(--red); font-size: 16px;"></i> Saques</h2>
-            <div class="table-toolbar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchWithdrawals" placeholder="Buscar por ID, Usuário ou Chave PIX..." oninput="applyFilters()">
-                </div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Saque</th>
-                                <th>ID Usuário</th>
-                                <th>Valor</th>
-                                <th>Chave PIX / Titular</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawalsBody"></tbody>
-                    </table>
-                </div>
-                <div class="pagination" id="withdrawalsPagination"></div>
-            </div>
-
-            <!-- Tabela de Usuários -->
-            <h2 class="section-title"><i class="fas fa-user-friends" style="color: #1877f2; font-size: 16px;"></i> Usuários Cadastrados</h2>
-            <div class="table-toolbar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchUsers" placeholder="Buscar por ID, Nome ou E-mail..." oninput="applyFilters()">
-                </div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Usuário</th>
-                                <th>Nome</th>
-                                <th>E-mail</th>
-                                <th>Tipo de Conta</th>
-                                <th>Saldo Atual</th>
-                                <th>Total Depósitos</th>
-                                <th>Adicionar Saldo</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersBody"></tbody>
-                    </table>
-                </div>
-                <div class="pagination" id="usersPagination"></div>
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-
-            <!-- NOVO: Tabela de Afiliados -->
-            <h2 class="section-title"><i class="fas fa-handshake" style="color: #d9a700; font-size: 16px;"></i> Gestão de Afiliados</h2>
-            <div class="table-toolbar">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchAffiliates" placeholder="Buscar Afiliado por ID ou Nome..." oninput="applyFilters()">
-                </div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Afiliado</th>
-                                <th>Nome</th>
-                                <th>Clientes (FTDs)</th>
-                                <th>Volume PNL</th>
-                                <th>Prejuízo dos Clientes</th>
-                                <th>Comissão (50%)</th>
-                                <th>CHAVE PIX</th>
-                            </tr>
-                        </thead>
-                        <tbody id="affiliatesBody"></tbody>
-                    </table>
-                </div>
-                <div class="pagination" id="affiliatesPagination"></div>
-            </div>
-
-
-
-
-
-
-
-
-
-
             </div>
         </div>
     </div>
@@ -485,7 +419,24 @@
     </div>
 
     <script>
-        // Configurações de Paginação
+        // =================================================================
+        // FUNÇÕES DE UI (NÃO AFETAM A LÓGICA DE NEGÓCIO)
+        // =================================================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        function setActiveNav(el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+        }
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // =================================================================
+        // LÓGICA ORIGINAL INTACTA (PRESERVADA)
+        // =================================================================
         const itemsPerPage = 5;
         let currentUserPage = 1;
         let currentDepositPage = 1;
@@ -754,7 +705,7 @@
         }
 
         function renderPagination(type, currentPage, totalPages) {
-            let containerId = type === 'users' ? 'usersPagination' : (type === 'withdrawals' ? 'withdrawalsPagination' : 'depositsPagination');
+            let containerId = type === 'users' ? 'usersPagination' : (type === 'withdrawals' ? 'withdrawalsPagination' : (type === 'affiliates' ? 'affiliatesPagination' : 'depositsPagination'));
             let container = document.getElementById(containerId);
             container.innerHTML = '';
 
@@ -882,18 +833,6 @@
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
         // NOVAS FUNÇÕES DE GESTÃO DE CONTA E RELATÓRIO
         function changeAccountType(userId, type) {
             let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
@@ -948,18 +887,6 @@
             win.document.close();
             win.print();
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
                        // NOVAS FUNÇÕES DOS AFILIADOS (CÁLCULO EM TEMPO REAL)
         function renderAffiliatesTable() {
@@ -1038,9 +965,6 @@
             if (aff) { aff.paymentDate = date; localStorage.setItem('bynex_users', JSON.stringify(users)); loadAdminData(); }
         }
 
-
-
-        
                         function payAffiliate(affId) {
             if (!confirm('Confirmar o pagamento deste afiliado? O valor será quitado e registrado no histórico.')) return;
             
@@ -1076,16 +1000,6 @@
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
     </script>
 </body>
 </html>
