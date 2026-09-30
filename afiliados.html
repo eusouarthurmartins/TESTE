@@ -10,6 +10,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Biblioteca para gerar imagem (Print/Compartilhar) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { 
             --bg-light: #f4f7f6; 
@@ -147,6 +149,16 @@
         .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
         .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+        /* Reports Section */
+        .report-toolbar { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .report-box { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 10px; }
+        .report-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
+        .report-row:last-child { border-bottom: none; }
+        .report-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-report { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-print { background: var(--blue); color: #fff; }
+        .btn-share { background: var(--green); color: #fff; }
+
         /* WhatsApp Floating Button */
         .wa-fab { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background-color: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 999; text-decoration: none; transition: transform 0.2s; }
         .wa-fab:hover { transform: scale(1.1); color: #fff; }
@@ -195,6 +207,7 @@
                 <a class="nav-item" onclick="scrollToSection('sec-links'); setActiveNav(this)"><i class="fas fa-link"></i> Divulgação & PIX</a>
                 <a class="nav-item" onclick="scrollToSection('sec-rewards'); setActiveNav(this)"><i class="fas fa-trophy"></i> Premiações</a>
                 <a class="nav-item" onclick="scrollToSection('sec-clients'); setActiveNav(this)"><i class="fas fa-users"></i> Seus Clientes</a>
+                <a class="nav-item" onclick="scrollToSection('sec-reports'); setActiveNav(this)"><i class="fas fa-file-alt"></i> Relatórios</a>
                 <a class="nav-item" onclick="scrollToSection('sec-history'); setActiveNav(this)"><i class="fas fa-history"></i> Pagamentos</a>
                 <a class="nav-item" onclick="scrollToSection('sec-rules'); setActiveNav(this)"><i class="fas fa-gavel"></i> Regras</a>
             </nav>
@@ -303,6 +316,35 @@
                         </table>
                     </div>
                     <div class="pagination" id="clientsPagination"></div>
+                </div>
+            </section>
+
+            <!-- Section: Reports -->
+            <section id="sec-reports">
+                <h2 class="section-title"><i class="fas fa-file-alt" style="color: var(--blue); font-size: 15px;"></i> Relatórios de Performance</h2>
+                <div class="rewards-container">
+                    <div class="report-toolbar">
+                        <button class="btn-link" onclick="generateReport('today')"><i class="fas fa-calendar-day"></i> Hoje</button>
+                        <button class="btn-link" onclick="generateReport('week')"><i class="fas fa-calendar-week"></i> Semana</button>
+                        <button class="btn-link" onclick="generateReport('month')"><i class="fas fa-calendar-alt"></i> Mês</button>
+                    </div>
+                    
+                    <div id="reportContent" style="display: none; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+                        <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 10px;">
+                            <h3 style="color: var(--text-main); font-size: 18px;">BYNEX PRO - Relatório de Afiliado</h3>
+                            <p style="font-size: 12px; color: var(--text-muted);">Período: <span id="rPeriod"></span></p>
+                            <p style="font-size: 12px; color: var(--text-muted);">ID: <span id="rId"></span></p>
+                        </div>
+                        
+                        <div class="report-row"><span>Depósitos Recebidos (Período):</span> <strong id="rDep">R$ 0,00</strong></div>
+                        <div class="report-row"><span>Saques Realizados (Período):</span> <strong id="rWd">R$ 0,00</strong></div>
+                        <div class="report-row"><span>Comissão Atual (Total):</span> <strong id="rComm">R$ 0,00</strong></div>
+                        
+                        <div class="report-actions">
+                            <button class="btn-report btn-print" onclick="printReport()"><i class="fas fa-print"></i> Imprimir / PDF</button>
+                            <button class="btn-report btn-share" onclick="shareReport()"><i class="fas fa-share-alt"></i> Compartilhar Imagem</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -583,6 +625,79 @@
                 currentHistoryPage = page;
                 loadAffData(); 
             }
+        }
+
+        // NOVAS FUNÇÕES DE RELATÓRIO
+        function generateReport(period) {
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let myClients = users.filter(u => u.referredBy === currentAffId);
+            let affUser = users.find(u => u.id === currentAffId);
+            
+            let now = new Date();
+            let filterDate = new Date();
+            if (period === 'today') filterDate.setHours(0,0,0,0);
+            if (period === 'week') filterDate.setDate(now.getDate() - 7);
+            if (period === 'month') filterDate.setMonth(now.getMonth() - 1);
+
+            let periodDep = 0, periodWd = 0;
+
+            myClients.forEach(c => {
+                let cDep = deposits.filter(d => {
+                    if (d.userId !== c.id || d.status !== 'Aprovado' || !d.date) return false;
+                    let parts = d.date.split(' ')[0].split('/');
+                    let dDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                    return dDate >= filterDate;
+                }).reduce((s, d) => s + (d.amount || 0), 0);
+                
+                let cWd = withdrawals.filter(w => {
+                    if (w.userId !== c.id || w.status !== 'Aprovado' || !w.date) return false;
+                    let parts = w.date.split(' ')[0].split('/');
+                    let wDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                    return wDate >= filterDate;
+                }).reduce((s, w) => s + (w.amount || 0), 0);
+
+                periodDep += cDep;
+                periodWd += cWd;
+            });
+
+            let pendingComm = affUser.totalEarned ? (affUser.totalEarned - (affUser.totalPaid || 0)) : 0;
+            if(pendingComm < 0) pendingComm = 0;
+
+            document.getElementById('reportContent').style.display = 'block';
+            document.getElementById('rPeriod').innerText = period === 'today' ? 'Hoje' : period === 'week' ? 'Últimos 7 dias' : 'Últimos 30 dias';
+            document.getElementById('rId').innerText = currentAffId;
+            document.getElementById('rDep').innerText = periodDep.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('rWd').innerText = periodWd.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('rComm').innerText = pendingComm.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function printReport() {
+            let content = document.getElementById('reportContent').innerHTML;
+            let win = window.open('', '', 'height=600,width=800');
+            win.document.write(`<html><head><title>Relatório Bynex</title><style>body{font-family:Arial;padding:20px;} h3{margin-bottom:5px} .report-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ccc;} .report-actions{display:none;}</style></head><body>${content}</body></html>`);
+            win.document.close();
+            win.print();
+        }
+
+        function shareReport() {
+            let area = document.getElementById('reportContent');
+            let actions = document.querySelector('.report-actions');
+            actions.style.display = 'none'; // Esconde botões na foto
+            
+            html2canvas(area).then(canvas => {
+                actions.style.display = 'flex'; // Devolve os botões
+                let image = canvas.toDataURL('image/png');
+                let link = document.createElement('a');
+                link.href = image;
+                link.download = 'relatorio-bynex.png';
+                link.click();
+                alert('Imagem salva! Você pode enviá-la no WhatsApp agora.');
+            }).catch(err => {
+                actions.style.display = 'flex';
+                alert('Erro ao gerar imagem. Tente usar a opção Imprimir.');
+            });
         }
 
         function copyLink() {
