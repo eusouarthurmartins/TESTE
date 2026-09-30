@@ -12,21 +12,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0b0f19;
-            --bg-panel: #111726;
-            --bg-sidebar: #080b12;
-            --bg-card: #151c2e;
-            --bg-input: #1c2438;
-            --text-main: #e2e8f0;
-            --text-muted: #64748b;
-            --accent: #10b981; /* Verde esmeralda */
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-sidebar: #111827;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #10b981;
             --accent-hover: #059669;
-            --border: #1e293b;
+            --border: #334155;
             --green: #10b981;
             --red: #ef4444;
             --yellow: #f59e0b;
             --blue: #3b82f6;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -34,7 +34,7 @@
         body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
 
         /* Login Area */
-        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: radial-gradient(circle at top right, #1a2b45, var(--bg-dark)); }
+        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: radial-gradient(circle at top right, #1e293b, var(--bg-dark)); }
         .login-card { background: var(--bg-panel); padding: 40px; border-radius: 16px; width: 400px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; border: 1px solid var(--border); }
         .login-logo { font-weight: 800; font-size: 28px; margin-bottom: 10px; color: #fff; } .login-logo span { color: var(--accent); }
         .login-sub { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
@@ -51,7 +51,7 @@
         .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
         .sidebar-logo { font-weight: 800; font-size: 22px; color: #fff; } .sidebar-logo span { color: var(--accent); }
         .sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; cursor: pointer; }
         .nav-item i { width: 20px; text-align: center; }
         .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
         .nav-item.active { background: rgba(16, 185, 129, 0.05); color: var(--accent); border-left-color: var(--accent); }
@@ -140,121 +140,123 @@
     </div>
 
     <!-- App Layout -->
-    <div id="adminArea" style="display:none;" class="app-layout">
-        
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">BYNEX <span>AFF</span></div>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="#sec-dashboard" class="nav-item active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
-                <a href="#sec-links" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-link"></i> Divulgação & PIX</a>
-                <a href="#sec-clients" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-users"></i> Seus Clientes</a>
-                <a href="#sec-history" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-history"></i> Pagamentos</a>
-            </nav>
-            <div class="sidebar-footer">
-                <button class="btn-logout" onclick="logoutAff()"><i class="fas fa-sign-out-alt"></i> Sair da Conta</button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <header class="main-header">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                    <div class="header-title">
-                        <h1>Painel do Afiliado</h1>
-                        <p>Acompanhe seus indicados e comissões em tempo real.</p>
-                    </div>
+    <div id="adminArea" style="display:none;">
+        <div class="app-layout">
+            
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">BYNEX <span>AFF</span></div>
                 </div>
-            </header>
-
-            <!-- Section: Dashboard -->
-            <section id="sec-dashboard">
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-icon blue"><i class="fas fa-users"></i></div>
-                        <div class="metric-info"><span>Total Cadastros</span><h3 id="mTotalUsers">0</h3></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon yellow"><i class="fas fa-coins"></i></div>
-                        <div class="metric-info"><span>Depósitos Aprovados</span><h3 id="mTotalDep">R$ 0,00</h3></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
-                        <div class="metric-info"><span>Saldo a Receber</span><h3 id="mPending" style="color: var(--green);">R$ 0,00</h3></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-icon red"><i class="fas fa-check-circle"></i></div>
-                        <div class="metric-info"><span>Total Já Recebido</span><h3 id="mTotalReceived">R$ 0,00</h3></div>
-                    </div>
+                <nav class="sidebar-nav">
+                    <a class="nav-item active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-links'); setActiveNav(this)"><i class="fas fa-link"></i> Divulgação & PIX</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-clients'); setActiveNav(this)"><i class="fas fa-users"></i> Seus Clientes</a>
+                    <a class="nav-item" onclick="scrollToSection('sec-history'); setActiveNav(this)"><i class="fas fa-history"></i> Pagamentos</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <button class="btn-logout" onclick="logoutAff()"><i class="fas fa-sign-out-alt"></i> Sair da Conta</button>
                 </div>
-            </section>
+            </aside>
 
-            <!-- Section: Links & Payment -->
-            <section id="sec-links">
-                <div class="grid-2-cols">
-                    <div class="info-box">
-                        <h3><i class="fas fa-share-alt" style="color: var(--blue);"></i> Link de Divulgação</h3>
-                        <p>Divulgue este link. Quem se cadastrar por ele será seu indicado automaticamente.</p>
-                        <div class="link-url" id="affLink">https://...</div>
-                        <button class="btn-link" onclick="copyLink()"><i class="fas fa-copy"></i> Copiar Link</button>
-                    </div>
-
-                    <div class="info-box">
-                        <h3><i class="fas fa-wallet" style="color: var(--accent);"></i> Dados de Pagamento</h3>
-                        <p>
-                            Chave PIX atual: <strong id="affPixDisplay" style="color: #fff;">Não cadastrada</strong><br>
-                            Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--yellow);">A definir</strong>
-                        </p>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="pixInput" class="input-custom" placeholder="Sua Chave PIX (CPF, Email, Celular)">
-                            <button class="btn-link" onclick="savePix()"><i class="fas fa-save"></i> Salvar</button>
+            <!-- Main Content -->
+            <div class="main-content">
+                <header class="main-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                        <div class="header-title">
+                            <h1>Painel do Afiliado</h1>
+                            <p>Acompanhe seus indicados e comissões em tempo real.</p>
                         </div>
                     </div>
-                </div>
-            </section>
+                </header>
 
-            <!-- Section: Clients -->
-            <section id="sec-clients">
-                <h2 class="section-title"><i class="fas fa-user-friends" style="color: var(--blue); font-size: 18px;"></i> Seus Clientes</h2>
-                <div class="table-card">
-                    <div class="table-toolbar">
-                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClients" placeholder="Buscar por ID do cliente..." oninput="renderClients()"></div>
+                <!-- Section: Dashboard -->
+                <section id="sec-dashboard">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+                            <div class="metric-info"><span>Total Cadastros</span><h3 id="mTotalUsers">0</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon yellow"><i class="fas fa-coins"></i></div>
+                            <div class="metric-info"><span>Depósitos Aprovados</span><h3 id="mTotalDep">R$ 0,00</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="metric-info"><span>Saldo a Receber</span><h3 id="mPending" style="color: var(--green);">R$ 0,00</h3></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon red"><i class="fas fa-check-circle"></i></div>
+                            <div class="metric-info"><span>Total Já Recebido</span><h3 id="mTotalReceived">R$ 0,00</h3></div>
+                        </div>
                     </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>ID Cliente</th><th>Nome</th><th>Depósitos Reais</th><th>Saques</th><th>Saldo Atual</th><th>Lucro/Prejuízo</th><th>Sua Comissão</th></tr></thead>
-                            <tbody id="clientsBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Section: History -->
-            <section id="sec-history">
-                <h2 class="section-title"><i class="fas fa-history" style="color: var(--green); font-size: 18px;"></i> Histórico de Pagamentos</h2>
-                <div class="table-card">
-                    <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>Data do Pagamento</th><th>Valor Pago</th><th>Status</th></tr></thead>
-                            <tbody id="historyBody">
-                                <tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>
-                            </tbody>
-                        </table>
+                <!-- Section: Links & Payment -->
+                <section id="sec-links">
+                    <div class="grid-2-cols">
+                        <div class="info-box">
+                            <h3><i class="fas fa-share-alt" style="color: var(--blue);"></i> Link de Divulgação</h3>
+                            <p>Divulgue este link. Quem se cadastrar por ele será seu indicado automaticamente.</p>
+                            <div class="link-url" id="affLink">https://...</div>
+                            <button class="btn-link" onclick="copyLink()"><i class="fas fa-copy"></i> Copiar Link</button>
+                        </div>
+
+                        <div class="info-box">
+                            <h3><i class="fas fa-wallet" style="color: var(--accent);"></i> Dados de Pagamento</h3>
+                            <p>
+                                Chave PIX atual: <strong id="affPixDisplay" style="color: #fff;">Não cadastrada</strong><br>
+                                Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--yellow);">A definir</strong>
+                            </p>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="pixInput" class="input-custom" placeholder="Sua Chave PIX (CPF, Email, Celular)">
+                                <button class="btn-link" onclick="savePix()"><i class="fas fa-save"></i> Salvar</button>
+                            </div>
+                        </div>
                     </div>
+                </section>
+
+                <!-- Section: Clients -->
+                <section id="sec-clients">
+                    <h2 class="section-title"><i class="fas fa-user-friends" style="color: var(--blue); font-size: 18px;"></i> Seus Clientes</h2>
+                    <div class="table-card">
+                        <div class="table-toolbar">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClients" placeholder="Buscar por ID do cliente..." oninput="renderClients()"></div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>ID Cliente</th><th>Nome</th><th>Depósitos Reais</th><th>Saques</th><th>Saldo Atual</th><th>Lucro/Prejuízo</th><th>Sua Comissão</th></tr></thead>
+                                <tbody id="clientsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: History -->
+                <section id="sec-history">
+                    <h2 class="section-title"><i class="fas fa-history" style="color: var(--green); font-size: 18px;"></i> Histórico de Pagamentos</h2>
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>Data do Pagamento</th><th>Valor Pago</th><th>Status</th></tr></thead>
+                                <tbody id="historyBody">
+                                    <tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <div style="margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    BYNEX PRO AFFILIATES &copy; 2024 - Sistema de Gestão de Indicações
                 </div>
-            </section>
-            
-            <div style="margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 20px;">
-                BYNEX PRO AFFILIATES &copy; 2024 - Sistema de Gestão de Indicações
             </div>
         </div>
     </div>
 
     <script>
-        // NOVAS FUNÇÕES DE UI (NÃO AFETAM A LÓGICA)
+        // FUNÇÕES DE UI (NÃO AFETAM A LÓGICA DE NEGÓCIO)
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
@@ -262,6 +264,9 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
             if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+        }
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // LÓGICA ORIGINAL INTACTA
@@ -274,7 +279,7 @@
                 currentAffId = id;
                 localStorage.setItem('bynex_aff_session', id);
                 document.getElementById('loginArea').style.display = 'none';
-                document.getElementById('adminArea').style.display = 'flex';
+                document.getElementById('adminArea').style.display = 'block';
                 loadAffData();
             } else {
                 alert('ID de afiliado não encontrado!');
