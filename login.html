@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bynex Pro - Login</title>
+
+
+
+    <!-- Favicon (Ícone da aba) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+
+    <!-- Open Graph (Prévia no WhatsApp/Redes Sociais) -->
+    <meta property="og:title" content="Bynex Pro - Plataforma de Trading">
+    <meta property="og:description" content="A corretora profissional para suas operações. Segura, rápida e completa.">
+    <meta property="og:image" content="https://dummyimage.com/1200x630/0b0e11/f0b90b&text=BYNEX+PRO">
+    <meta property="og:type" content="website">
+
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg-light: #f4f7f6; 
+            --bg-card: #ffffff; 
+            --text-main: #1c1e21; 
+            --text-muted: #65676b; 
+            --accent: #f0b90b; 
+            --accent-dark: #d9a700; 
+            --border: #ced0d4; 
+            --green: #00c853; 
+            --green-hover: #00e676;
+            --red: #ff3d57; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Top Bar (Desktop) */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 3;
+            display: none; /* Escondido no mobile */
+        }
+        .top-logo {
+            font-weight: 800;
+            font-size: 24px;
+            color: var(--text-main);
+        }
+        .top-logo span { color: var(--accent); }
+        
+        .top-btn {
+            background: var(--green);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .top-btn:hover { background: var(--green-hover); }
+        .top-btn.secondary { background: transparent; color: var(--text-main); border: 1px solid var(--border); }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px; /* Mais larga */
+            padding: 20px;
+        }
+
+        .login-box { 
+            background: var(--bg-card); 
+            border: 1px solid #e3e5e8; 
+            border-radius: 20px; 
+            padding: 35px 40px; /* Altura reduzida */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+        }
+
+        .logo-center { 
+            text-align: center; 
+            font-weight: 800; 
+            font-size: 32px; 
+            color: var(--text-main); 
+            margin-bottom: 5px; 
+            display: none; /* Escondido no desktop */
+        }
+        .logo-center span { color: var(--accent); }
+        
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+
+        .tabs { 
+            display: flex; 
+            background: #f0f2f5; 
+            border-radius: 10px; 
+            padding: 4px; 
+            margin-bottom: 20px; 
+        }
+        .tab { 
+            flex: 1; 
+            text-align: center; 
+            padding: 12px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            color: var(--text-muted); 
+            transition: 0.2s; 
+            font-size: 14px;
+        }
+        .tab.active { 
+            background: var(--bg-card); 
+            color: var(--text-main); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .form-group { margin-bottom: 12px; /* Altura reduzida */ }
+        .form-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
+        .form-input { 
+            width: 100%; 
+            padding: 14px; 
+            background: #f7f9fa; 
+            border: 1px solid var(--border); 
+            border-radius: 10px; 
+            color: var(--text-main); 
+            font-size: 16px; 
+            outline: none; 
+            transition: 0.2s; 
+        }
+        .form-input:focus { 
+            border-color: var(--accent); 
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1); 
+        }
+
+        .form-check { display: flex; align-items: center; gap: 10px; margin: 15px 0; }
+        .form-check input { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+        .form-check label { font-size: 13px; color: var(--text-muted); cursor: pointer; }
+
+        .btn-submit { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--accent); 
+            color: #000; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 5px; 
+            transition: 0.2s; 
+        }
+        .btn-submit:hover { background: var(--accent-dark); }
+        
+        .error-msg { color: var(--red); font-size: 13px; text-align: center; margin-top: 15px; display: none; background: #ffeef0; padding: 10px; border-radius: 8px; }
+
+        /* Mobile - Preenche a tela toda */
+        @media (max-width: 768px) {
+            body { background-color: var(--bg-card); }
+            .top-bar { display: none; }
+            .login-wrapper { max-width: 100%; height: 100vh; padding: 0; display: flex; flex-direction: column; justify-content: center; }
+            .login-box { 
+                border: none; 
+                border-radius: 0; 
+                padding: 30px 25px; 
+                height: 100vh; 
+                display: flex; 
+                flex-direction: column; 
+                justify-content: center; 
+                box-shadow: none; 
+            }
+            .logo-center { display: block; font-size: 36px; margin-bottom: 10px; }
+            .subtitle { margin-bottom: 30px; }
+        }
+
+        /* Desktop - Mostra Top Bar */
+        @media (min-width: 769px) {
+            .top-bar { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar (Apenas Desktop) -->
+    <div class="top-bar">
+        <div class="top-logo">BYNEX <span>PRO</span></div>
+        <button class="top-btn" id="topRightBtn" onclick="switchTab('register')">Registre-se</button>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <div class="logo-center">BYNEX <span>PRO</span></div>
+            <div class="subtitle">Acesse sua conta ou crie uma nova</div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Entrar</div>
+                <div class="tab" onclick="switchTab('register')">Cadastrar</div>
+            </div>
+
+            <!-- Form Login -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="loginPass" placeholder="••••••••" required>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="loginAgeCheck" required>
+                    <label for="loginAgeCheck">Confirmo que tenho mais de 18 anos.</label>
+                </div>
+                <button type="submit" class="btn-submit">Acessar Plataforma</button>
+                <div class="error-msg" id="loginError">E-mail ou senha incorretos.</div>
+            </form>
+
+            <!-- Form Cadastro -->
+            <form id="registerForm" style="display:none;" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" class="form-input" id="regName" placeholder="João da Silva" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="regPass" placeholder="Mínimo 6 caracteres" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirmar Senha</label>
+                    <input type="password" class="form-input" id="regPassConfirm" placeholder="Repita a senha" required>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="regAgeCheck" required>
+                    <label for="regAgeCheck">Confirmo que tenho mais de 18 anos.</label>
+                </div>
+                <button type="submit" class="btn-submit">Criar Conta Gratuita</button>
+                <div class="error-msg" id="registerError">As senhas não coincidem.</div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simulação de Banco de Dados Local
+        function getDB() { return JSON.parse(localStorage.getItem('bynex_users')) || []; }
+        function saveDB(db) { localStorage.setItem('bynex_users', JSON.stringify(db)); }
+
+        function switchTab(tab) {
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+            document.querySelectorAll('.tab').forEach((el, i) => {
+                el.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
+            });
+            
+            // Esconde erros ao trocar aba
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('registerError').style.display = 'none';
+
+            // Atualiza botão superior direito (Desktop)
+            let topBtn = document.getElementById('topRightBtn');
+            if (tab === 'login') {
+                topBtn.innerText = 'Registre-se';
+                topBtn.className = 'top-btn';
+                topBtn.setAttribute('onclick', "switchTab('register')");
+            } else {
+                topBtn.innerText = 'Entrar';
+                topBtn.className = 'top-btn secondary';
+                topBtn.setAttribute('onclick', "switchTab('login')");
+            }
+        }
+
+                function handleRegister(e) {
+            e.preventDefault();
+            let name = document.getElementById('regName').value;
+            let email = document.getElementById('regEmail').value;
+            let pass = document.getElementById('regPass').value;
+            let passConf = document.getElementById('regPassConfirm').value;
+            let ageCheck = document.getElementById('regAgeCheck').checked;
+
+            if (!ageCheck) {
+                let err = document.getElementById('registerError');
+                err.innerText = 'Você precisa confirmar que tem mais de 18 anos para se cadastrar.';
+                err.style.display = 'block';
+                return;
+            }
+
+            if (pass !== passConf) {
+                let err = document.getElementById('registerError');
+                err.innerText = 'As senhas não coincidem.';
+                err.style.display = 'block';
+                return;
+            }
+
+            let db = getDB();
+            if (db.find(u => u.email === email)) {
+                let err = document.getElementById('registerError');
+                err.innerText = 'E-mail já cadastrado. Tente fazer login.';
+                err.style.display = 'block';
+                return;
+            }
+
+            // Cria usuário com ID único e saldo inicial
+            let newUser = {
+                id: 'BYX' + Math.floor(10000 + Math.random() * 90000),
+                name: name,
+                email: email,
+                password: pass,
+                balance: 0.00,
+                referredBy: new URLSearchParams(window.location.search).get('ref') || null // NOVO: Salva quem indicou
+            };
+            db.push(newUser);
+            saveDB(db);
+
+            alert('Conta criada com sucesso! Seu ID é: ' + newUser.id);
+            switchTab('login');
+            document.getElementById('loginEmail').value = email;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            let email = document.getElementById('loginEmail').value;
+            let pass = document.getElementById('loginPass').value;
+            let ageCheck = document.getElementById('loginAgeCheck').checked;
+            let err = document.getElementById('loginError');
+
+            if (!ageCheck) {
+                err.innerText = 'Você precisa confirmar que tem mais de 18 anos para acessar.';
+                err.style.display = 'block';
+                return;
+            }
+
+            let db = getDB();
+            let user = db.find(u => u.email === email && u.password === pass);
+
+            if (user) {
+                // NOVO: Verifica se o admin bloqueou a conta
+                if (user.blocked) {
+                    err.innerText = 'Sua conta foi bloqueada pela administração. Entre em contato com o suporte.';
+                    err.style.display = 'block';
+                    return;
+                }
+                localStorage.setItem('bynex_session', user.id);
+                window.location.href = 'index.html';
+            } else {
+                err.innerText = 'E-mail ou senha incorretos.';
+                err.style.display = 'block';
+            }
+        }
+        
+    </script>
+</body>
+</html>

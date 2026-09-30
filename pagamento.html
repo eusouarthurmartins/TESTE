@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bynex Pro - Depósito</title>
+
+
+    <!-- Favicon (Ícone da aba) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+
+    <!-- Open Graph (Prévia no WhatsApp/Redes Sociais) -->
+    <meta property="og:title" content="Bynex Pro - Plataforma de Trading">
+    <meta property="og:description" content="A corretora profissional para suas operações. Segura, rápida e completa.">
+    <meta property="og:image" content="https://dummyimage.com/1200x630/0b0e11/f0b90b&text=BYNEX+PRO">
+    <meta property="og:type" content="website">
+
+
+
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg-light: #f4f7f6; 
+            --bg-card: #ffffff; 
+            --text-main: #1c1e21; 
+            --text-muted: #65676b; 
+            --accent: #f0b90b; 
+            --accent-dark: #d9a700; 
+            --border: #ced0d4; 
+            --green: #00c853; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        html, body { width: 100%; overflow-x: hidden; }
+
+        body { 
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px 0;
+        }
+
+        .pay-wrapper {
+            width: 100%;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .pay-box { 
+            background: var(--bg-card); 
+            border: 1px solid #e3e5e8; 
+            border-radius: 20px; 
+            padding: 30px 40px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); 
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e3e5e8;
+        }
+        .logo { font-weight: 800; font-size: 22px; color: var(--text-main); }
+        .logo span { color: var(--accent); }
+        .btn-back { background: none; color: var(--text-muted); border: none; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .btn-back:hover { color: var(--text-main); }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .col-left { text-align: center; }
+        .pay-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; }
+        
+        .qr-code { 
+            width: 180px; 
+            height: 180px; 
+            background: #fff; 
+            padding: 10px; 
+            border-radius: 12px; 
+            margin: 0 auto 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e3e5e8;
+        }
+        .qr-code img { width: 100%; height: 100%; }
+        
+        .pix-key { 
+            background: #f7f9fa; 
+            border: 1px dashed var(--border); 
+            padding: 12px; 
+            border-radius: 8px; 
+            word-break: break-all; 
+            cursor: pointer; 
+            font-size: 12px; 
+            color: var(--text-muted);
+            transition: 0.2s;
+        }
+        .pix-key:hover { border-color: var(--accent); color: var(--text-main); }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-label { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; display: block; font-weight: 500; }
+        .form-input { 
+            width: 100%; 
+            padding: 14px; 
+            background: #f7f9fa; 
+            border: 1px solid var(--border); 
+            border-radius: 10px; 
+            color: var(--text-main); 
+            font-size: 16px; 
+            outline: none; 
+            transition: 0.2s; 
+        }
+        .form-input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1); }
+        
+        .btn-submit { 
+            width: 100%; 
+            padding: 15px; 
+            background: var(--accent); 
+            color: #000; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 5px; 
+            transition: 0.2s; 
+        }
+        .btn-submit:hover { background: var(--accent-dark); }
+
+        .success-msg { text-align: center; padding: 20px; display: none; }
+        .success-msg i { font-size: 50px; color: var(--green); margin-bottom: 20px; }
+        .success-msg h2 { margin-bottom: 10px; }
+        .success-msg p { color: var(--text-muted); margin: 10px 0 20px; }
+
+        @media (max-width: 768px) {
+            body { padding: 0; align-items: flex-start; }
+            .pay-wrapper { max-width: 100%; padding: 0; }
+            .pay-box { 
+                border: none; 
+                border-radius: 0; 
+                min-height: 100vh; 
+                padding: 25px 20px; 
+                box-shadow: none; 
+                width: 100%;
+            }
+            .content-grid { grid-template-columns: 1fr; gap: 25px; }
+            .col-left { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pay-wrapper">
+        <div class="pay-box">
+            <div class="header">
+                <div class="logo">BYNEX <span>PRO</span></div>
+                <button class="btn-back" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+
+            <div id="paymentScreen">
+                <div class="content-grid">
+                    <div class="col-left">
+                        <div class="pay-title">Pague com PIX</div>
+                        <div class="qr-code">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020126580014BR.GOV.BCB.PIX0136bynex_deposito_unique_key5204000053039865802BR5913BYNEX%20PRO6009SAO%20PAULO62070503***6304A1B2" alt="QR Code">
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">Ou copie a chave manualmente:</p>
+                        <div class="pix-key" onclick="copyKey()">
+                            00020126580014BR.GOV.BCB.PIX0136bynex_deposito_unique_key...
+                        </div>
+                    </div>
+
+                    <div class="col-right">
+                        <div class="pay-title" style="text-align: left;">Confirmar Depósito</div>
+                        <form onsubmit="sendProof(event)">
+                            <div class="form-group">
+                                <label class="form-label">Valor Depositado (R$)</label>
+                                <input type="number" class="form-input" id="depAmount" step="0.01" placeholder="0,00" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Enviar Comprovante (Imagem)</label>
+                                <input type="file" class="form-input" id="depProof" accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn-submit">Enviar Comprovante</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="successScreen" class="success-msg">
+                <i class="fas fa-check-circle"></i>
+                <h2>Comprovante Enviado!</h2>
+                <p>Seu depósito está em processamento. O saldo será liberado em alguns minutos após a confirmação.</p>
+                <button class="btn-submit" onclick="window.location.href='index.html'">Voltar para Plataforma</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyKey() {
+            let key = "00020126580014BR.GOV.BCB.PIX0136bynex_deposito_unique_key";
+            navigator.clipboard.writeText(key).then(() => {
+                alert('Chave PIX copiada para a área de transferência!');
+            }).catch(() => {
+                alert('Chave PIX copiada! (Simulação)');
+            });
+        }
+
+        function sendProof(e) {
+            e.preventDefault();
+            let amount = document.getElementById('depAmount').value;
+            let fileInput = document.getElementById('depProof');
+            
+            if (!fileInput.files[0]) return;
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            // Lendo a imagem para redimensionar antes de salvar
+            reader.onload = function(event) {
+                let img = new Image();
+                img.src = event.target.result;
+                
+                img.onload = function() {
+                    // Cria um canvas para reduzir o tamanho da imagem (evita erro de localStorage cheio)
+                    let canvas = document.createElement('canvas');
+                    let ctx = canvas.getContext('2d');
+                    
+                    let MAX_WIDTH = 300; // Imagem bem reduzida
+                    let scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+                    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    // Converte para JPEG com qualidade baixa para pesar poucos KBs
+                    let dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+
+                    let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+                    let session = localStorage.getItem('bynex_session');
+                    
+                    deposits.push({
+                        id: 'DEP' + Date.now(),
+                        userId: session,
+                        amount: parseFloat(amount),
+                        proof: dataUrl, // Imagem comprimida
+                        status: 'Pendente'
+                    });
+                    
+                    try {
+                        localStorage.setItem('bynex_deposits', JSON.stringify(deposits));
+                        // Sucesso! Mostra a tela de confirmado
+                        document.getElementById('paymentScreen').style.display = 'none';
+                        document.getElementById('successScreen').style.display = 'block';
+                    } catch (e) {
+                        alert("Erro ao salvar. O arquivo pode ser muito grande mesmo após redução. Tente outra imagem.");
+                    }
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>

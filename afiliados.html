@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bynex Pro - Painel Afiliados</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg-light: #f4f7f6; --bg-card: #ffffff; --text-main: #1c1e21; --text-muted: #65676b; 
+            --accent: #f0b90b; --accent-dark: #d9a700; --border: #e3e5e8; --green: #00c853; --red: #ff3d57; --blue: #1877f2;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-light); color: var(--text-main); }
+
+        .admin-header { background: var(--bg-card); padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .admin-logo { font-weight: 800; font-size: 20px; } .admin-logo span { color: var(--accent); }
+        .btn-link { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 13px; }
+
+        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { background: var(--bg-card); padding: 40px; border-radius: 20px; width: 400px; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.05); text-align: center; }
+        .input-pass { width: 100%; padding: 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; outline: none; }
+        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; }
+
+        .admin-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .metric-card { background: var(--bg-card); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .metric-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .metric-icon.blue { background: #e7f0ff; color: var(--blue); } .metric-icon.yellow { background: #fff8e1; color: var(--accent-dark); }
+        .metric-icon.green { background: #e6fff4; color: var(--green); } .metric-icon.red { background: #ffeef0; color: var(--red); }
+        .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 2px; }
+        .metric-info h3 { font-size: 18px; }
+
+        .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
+        .link-box { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .link-url { background: #f7f9fa; padding: 10px 15px; border-radius: 8px; font-family: monospace; font-size: 14px; color: var(--blue); border: 1px dashed var(--border); word-break: break-all; }
+
+        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 15px; }
+        .search-box { position: relative; flex: 1; max-width: 300px; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
+
+        .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 15px; }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f7f9fa; padding: 10px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 10px 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        tr:last-child td { border-bottom: none; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .badge-positive { background: #e6fff4; color: var(--green); } .badge-negative { background: #ffeef0; color: var(--red); }
+
+        @media (max-width: 768px) { .admin-container { padding: 20px 15px; } .admin-header { padding: 12px 20px; } .table-toolbar { flex-direction: column; align-items: stretch; } .search-box { max-width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <div id="loginArea" class="login-area">
+        <div class="login-card">
+            <div class="admin-logo" style="margin-bottom: 20px;">BYNEX <span>Afiliados</span></div>
+            <h1>Painel do Afiliado</h1>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Digite o seu ID de usuário para acessar.</p>
+            <input type="text" class="input-pass" id="affId" placeholder="Ex: BYX12345" onkeyup="if(event.key==='Enter') checkAffiliate()">
+            <button class="btn-pass" onclick="checkAffiliate()">Acessar Painel</button>
+        </div>
+    </div>
+
+    <div id="adminArea" style="display:none;">
+        <header class="admin-header">
+            <div class="admin-logo">BYNEX <span>Afiliados</span></div>
+            <button class="btn-link" onclick="logoutAff()">Sair</button>
+        </header>
+
+        <div class="admin-container">
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-icon blue"><i class="fas fa-users"></i></div><div class="metric-info"><span>Total de Cadastros</span><h3 id="mTotalUsers">0</h3></div></div>
+                <div class="metric-card"><div class="metric-icon yellow"><i class="fas fa-coins"></i></div><div class="metric-info"><span>Depósitos Aprovados</span><h3 id="mTotalDep">R$ 0,00</h3></div></div>
+                <div class="metric-card"><div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div><div class="metric-info"><span>Saldo a Receber (Aberto)</span><h3 id="mPending" style="color: var(--green);">R$ 0,00</h3></div></div>
+                <div class="metric-card"><div class="metric-icon red"><i class="fas fa-check-circle"></i></div><div class="metric-info"><span>Total Já Recebido</span><h3 id="mTotalReceived">R$ 0,00</h3></div></div>
+            </div>
+
+            <div class="link-box">
+                <div style="flex: 1;">
+                    <h3 style="font-size: 16px; margin-bottom: 5px;">Seu Link de Divulgação</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Divulgue este link. Quem se cadastrar por ele será seu indicado.</p>
+                    <div class="link-url" id="affLink" style="margin-bottom: 10px;">https://...</div>
+                    <button class="btn-link" onclick="copyLink()"><i class="fas fa-copy"></i> Copiar Link</button>
+                </div>
+            </div>
+
+            <div class="link-box">
+                <div style="flex: 1;">
+                    <h3 style="font-size: 16px; margin-bottom: 5px;">Dados de Pagamento</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+                        Chave PIX atual: <strong id="affPixDisplay" style="color: var(--text-main);">Não cadastrada</strong><br>
+                        Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--accent-dark);">A definir pela administração</strong>
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="pixInput" placeholder="Digite sua Chave PIX (CPF, Email, Celular...)" style="flex: 1; padding: 10px 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 8px; outline: none;">
+                        <button class="btn-link" onclick="savePix()"><i class="fas fa-save"></i> Salvar PIX</button>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title"><i class="fas fa-user-friends" style="color: #1877f2; font-size: 16px;"></i> Seus Clientes</h2>
+            <div class="table-toolbar">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClients" placeholder="Buscar por ID do cliente..." oninput="renderClients()"></div>
+            </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>ID Cliente</th><th>Nome</th><th>Depósitos Reais</th><th>Saques</th><th>Saldo Atual</th><th>Lucro/Prejuízo</th><th>Sua Comissão</th></tr></thead>
+                        <tbody id="clientsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Histórico de Pagamentos -->
+            <h2 class="section-title"><i class="fas fa-history" style="color: var(--green); font-size: 16px;"></i> Histórico de Pagamentos</h2>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>Data do Pagamento</th><th>Valor Pago</th><th>Status</th></tr></thead>
+                        <tbody id="historyBody">
+                            <tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAffId = '';
+
+        function checkAffiliate() {
+            let id = document.getElementById('affId').value.trim();
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            if (users.find(u => u.id === id)) {
+                currentAffId = id;
+                localStorage.setItem('bynex_aff_session', id);
+                document.getElementById('loginArea').style.display = 'none';
+                document.getElementById('adminArea').style.display = 'block';
+                loadAffData();
+            } else {
+                alert('ID de afiliado não encontrado!');
+            }
+        }
+
+        function logoutAff() {
+            localStorage.removeItem('bynex_aff_session');
+            location.reload();
+        }
+
+        function loadAffData() {
+            document.getElementById('affLink').innerText = window.location.origin + window.location.pathname.replace('afiliados.html', 'login.html') + '?ref=' + currentAffId;
+            
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let myClients = users.filter(u => u.referredBy === currentAffId);
+            
+            let affUser = users.find(u => u.id === currentAffId);
+            let rate = (affUser && affUser.commissionRate) ? affUser.commissionRate : 50;
+            
+            let totalDep = 0, totalWd = 0, ftds = 0, totalNetLoss = 0;
+
+            myClients.forEach(c => {
+                let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
+                let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
+                if (cDep > 0) ftds++;
+                totalDep += cDep;
+                totalWd += cWd;
+                
+                let netLoss = (cDep - cWd) - (c.balance || 0);
+                if (netLoss > 0) totalNetLoss += netLoss;
+            });
+            
+            // Calcula Saldo a Receber e Total Já Recebido (Em tempo real)
+            let dynamicEarned = totalNetLoss * (rate / 100);
+            let totalPaid = affUser.totalPaid || 0;
+            let pendingComm = dynamicEarned - totalPaid;
+            if (pendingComm < 0) pendingComm = 0;
+
+            document.getElementById('mTotalUsers').innerText = myClients.length + ' (FTDs: ' + ftds + ')';
+            document.getElementById('mTotalDep').innerText = totalDep.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('mPending').innerText = pendingComm.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('mTotalReceived').innerText = totalPaid.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            // Renderiza Histórico de Pagamentos
+            let historyBody = document.getElementById('historyBody');
+            if (affUser.paymentHistory && affUser.paymentHistory.length > 0) {
+                historyBody.innerHTML = '';
+                affUser.paymentHistory.reverse().forEach(p => {
+                    historyBody.innerHTML += `<tr>
+                        <td>${p.date}</td>
+                        <td style="color: var(--green); font-weight: 700;">+ R$ ${p.amount.toFixed(2)}</td>
+                        <td><span class="badge badge-positive">Pago</span></td>
+                    </tr>`;
+                });
+            } else {
+                historyBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>';
+            }
+
+            if (affUser) {
+                document.getElementById('affPixDisplay').innerText = affUser.pixKey ? affUser.pixKey : 'Não cadastrada';
+                document.getElementById('pixInput').value = affUser.pixKey ? affUser.pixKey : '';
+                document.getElementById('affDateDisplay').innerText = affUser.paymentDate ? new Date(affUser.paymentDate+'T00:00:00').toLocaleDateString('pt-BR') : 'A definir pela administração';
+            }
+
+            renderClients();
+        }
+
+        function savePix() {
+            let pix = document.getElementById('pixInput').value.trim();
+            if (!pix) { alert('Digite uma chave PIX válida.'); return; }
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let aff = users.find(u => u.id === currentAffId);
+            if (aff) {
+                aff.pixKey = pix;
+                localStorage.setItem('bynex_users', JSON.stringify(users));
+                alert('Chave PIX salva com sucesso!');
+                loadAffData();
+            }
+        }
+
+        function renderClients() {
+            let query = document.getElementById('searchClients').value.toLowerCase();
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let affUser = users.find(u => u.id === currentAffId);
+            let rate = (affUser && affUser.commissionRate) ? affUser.commissionRate : 50;
+            
+            let myClients = users.filter(u => u.referredBy === currentAffId && (u.id.toLowerCase().includes(query) || u.name.toLowerCase().includes(query)));
+            
+            let body = document.getElementById('clientsBody');
+            if (myClients.length === 0) { body.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum cliente encontrado.</td></tr>'; return; }
+
+            body.innerHTML = '';
+            myClients.forEach(c => {
+                let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
+                let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
+                let netLoss = (cDep - cWd) - (c.balance || 0);
+                let isProfit = netLoss < 0;
+                let displayNetLoss = isProfit ? 'R$ 0,00' : netLoss.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                let comm = (isProfit ? 0 : netLoss * (rate / 100));
+
+                body.innerHTML += `<tr>
+                    <td>${c.id}</td><td>${c.name}</td>
+                    <td>R$ ${cDep.toFixed(2)}</td><td>R$ ${cWd.toFixed(2)}</td><td>R$ ${(c.balance || 0).toFixed(2)}</td>
+                    <td><span class="badge ${isProfit ? 'badge-positive' : 'badge-negative'}">${displayNetLoss}</span></td>
+                    <td>R$ ${comm.toFixed(2)}</td>
+                </tr>`;
+            });
+        }
+
+        function copyLink() {
+            let link = document.getElementById('affLink').innerText;
+            navigator.clipboard.writeText(link).then(() => alert('Link copiado!'));
+        }
+
+        window.onload = function() {
+            let session = localStorage.getItem('bynex_aff_session');
+            if (session) { document.getElementById('affId').value = session; checkAffiliate(); }
+        };
+    </script>
+</body>
+</html>

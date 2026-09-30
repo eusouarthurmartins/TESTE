@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bynex Pro - Painel Admin</title>
+
+    <!-- Favicon (Ícone da aba) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+
+    <!-- Open Graph (Prévia no WhatsApp/Redes Sociais) -->
+    <meta property="og:title" content="Bynex Pro - Plataforma de Trading">
+    <meta property="og:description" content="A corretora profissional para suas operações. Segura, rápida e completa.">
+    <meta property="og:image" content="https://dummyimage.com/1200x630/0b0e11/f0b90b&text=BYNEX+PRO">
+    <meta property="og:type" content="website">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg-light: #f4f7f6; 
+            --bg-card: #ffffff; 
+            --text-main: #1c1e21; 
+            --text-muted: #65676b; 
+            --accent: #f0b90b; 
+            --accent-dark: #d9a700; 
+            --border: #e3e5e8; 
+            --green: #00c853; 
+            --red: #ff3d57; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { background-color: var(--bg-light); color: var(--text-main); }
+
+        /* Header */
+        .admin-header {
+            background: var(--bg-card);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .admin-logo { font-weight: 800; font-size: 20px; color: var(--text-main); }
+        .admin-logo span { color: var(--accent); }
+        .btn-logout { background: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--red); }
+        .btn-logout:hover { background: #ffeef0; }
+
+        /* Login Area */
+        .login-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-light);
+        }
+        .login-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .login-card h1 { font-size: 22px; margin-bottom: 20px; }
+        .input-pass { width: 100%; padding: 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; outline: none; }
+        .input-pass:focus { border-color: var(--accent); }
+        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-pass:hover { background: var(--accent-dark); }
+
+        /* Admin Container */
+        .admin-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: var(--bg-card);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .metric-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .metric-icon.blue { background: #e7f0ff; color: #1877f2; }
+        .metric-icon.yellow { background: #fff8e1; color: var(--accent-dark); }
+        .metric-icon.green { background: #e6fff4; color: var(--green); }
+        .metric-icon.red { background: #ffeef0; color: var(--red); }
+        .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 2px; }
+        .metric-info h3 { font-size: 18px; }
+
+        /* Sections */
+        .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
+
+        /* Toolbar (Search) */
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+        .search-box { position: relative; flex: 1; max-width: 300px; }
+        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+        .search-box input:focus { border-color: var(--accent); }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
+
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f7f9fa; padding: 10px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        td { padding: 10px 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        tr:last-child td { border-bottom: none; }
+
+        /* Status Badges */
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .badge-pending { background: #fff8e1; color: var(--accent-dark); }
+        .badge-approved { background: #e6fff4; color: var(--green); }
+        .badge-rejected { background: #ffeef0; color: var(--red); }
+
+        /* Action Buttons */
+        .btn { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; transition: 0.2s; }
+        .btn-approve { background: var(--green); color: #fff; }
+        .btn-approve:hover { background: #00b347; }
+        .btn-reject { background: var(--red); color: #fff; }
+        .btn-reject:hover { background: #e63950; }
+                .btn-add { background: var(--accent); color: #000; padding: 6px 8px; }
+        .btn-block { background: var(--text-muted); color: #fff; }
+        .btn-delete { background: var(--red); color: #fff; }
+        .btn-reset-user { background: var(--accent-dark); color: #000; }
+        .badge-vip { background: #fff8e1; color: #d9a700; }
+        .badge-mkt { background: #e7f0ff; color: #1877f2; }
+        .badge-real { background: #e6fff4; color: #00c853; }
+        .badge-blocked { background: #ffeef0; color: var(--red); }
+        .type-select { padding: 4px; border-radius: 6px; border: 1px solid var(--border); background: #f7f9fa; font-size: 12px; outline: none; }
+        .user-actions { display: flex; gap: 4px; }
+        .report-toolbar { background: var(--bg-card); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .report-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-report { background: var(--bg-light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-report:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+
+
+
+
+
+        .btn-pay-aff { background: var(--green); color: #fff; }
+        .badge-aff-pending { background: #fff8e1; color: var(--accent-dark); }
+        .badge-aff-paid { background: #e6fff4; color: var(--green); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .proof-img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); }
+
+        .add-balance-input { width: 70px; padding: 6px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; }
+        .add-balance-form { display: flex; gap: 5px; align-items: center; }
+
+        /* Pagination */
+        .pagination { display: flex; gap: 5px; justify-content: center; align-items: center; padding: 10px 0; flex-wrap: wrap; }
+        .page-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .page-btn:hover:not(:disabled) { background: #f7f9fa; }
+        .page-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Image Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content { position: relative; max-width: 90%; max-height: 90%; }
+        .modal-content img { max-width: 100%; max-height: 90vh; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .close-modal {
+            position: absolute; top: -40px; right: 0;
+            background: #fff; color: #000; border: none; width: 36px; height: 36px;
+            border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .admin-container { padding: 20px 15px; }
+            .admin-header { padding: 12px 20px; }
+            .table-toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tela de Login do Admin -->
+    <div id="loginArea" class="login-area">
+        <div class="login-card">
+            <div class="admin-logo" style="margin-bottom: 20px;">BYNEX <span>PRO ADMIN</span></div>
+            <h1>Painel Restrito</h1>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Digite a senha mestra para acessar o sistema.</p>
+            <input type="password" class="input-pass" id="adminPass" placeholder="Senha Mestra" onkeyup="if(event.key==='Enter') checkAdmin()">
+            <button class="btn-pass" onclick="checkAdmin()">Acessar Painel</button>
+        </div>
+    </div>
+
+    <!-- Area do Painel Admin -->
+    <div id="adminArea" style="display:none;">
+        <header class="admin-header">
+            <div class="admin-logo">BYNEX <span>PRO</span></div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-logout" style="color: #1877f2; border-color: #1877f2;" onclick="loadAdminData()" title="Atualizar Dados"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                <button class="btn-logout" style="color: var(--red);" onclick="resetSystem()" title="Apagar todos os dados"><i class="fas fa-trash-alt"></i> Resetar Tudo</button>
+                <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </header>
+
+        <div class="admin-container">
+                        <!-- Métricas Rápidas -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+                    <div class="metric-info">
+                        <span>Total de Usuários</span>
+                        <h3 id="totalUsers">0</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon yellow"><i class="fas fa-clock"></i></div>
+                    <div class="metric-info">
+                        <span>Depósitos Pendentes</span>
+                        <h3 id="totalDepPending">0</h3>
+                    </div>
+                </div>
+                <!-- NOVO: Depósitos Reais (Aprovados) -->
+                <div class="metric-card">
+                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="metric-info">
+                        <span>Depósitos Reais (Aprovados)</span>
+                        <h3 id="totalDepApprovedAmount">R$ 0,00</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon red"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="metric-info">
+                        <span>Saques Pendentes</span>
+                        <h3 id="totalWdPending">0</h3>
+                    </div>
+                </div>
+                <!-- NOVO: Saques Aprovados -->
+                <div class="metric-card">
+                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="metric-info">
+                        <span>Saques Aprovados</span>
+                        <h3 id="totalWdApproved">0</h3>
+                    </div>
+                </div>
+                <!-- NOVO: Saques Rejeitados -->
+                <div class="metric-card">
+                    <div class="metric-icon red"><i class="fas fa-times-circle"></i></div>
+                    <div class="metric-info">
+                        <span>Saques Rejeitados</span>
+                        <h3 id="totalWdRejected">0</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="metric-info">
+                        <span>Saldo Total em Contas</span>
+                        <h3 id="totalBalance">R$ 0,00</h3>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+                <!-- NOVOS CARTÕES DE AFILIADOS -->
+                <div class="metric-card">
+                    <div class="metric-icon yellow"><i class="fas fa-handshake"></i></div>
+                    <div class="metric-info">
+                        <span>Afiliados: Total Em Aberto</span>
+                        <h3 id="totalAffPending">R$ 0,00</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="metric-info">
+                        <span>Afiliados: Total Já Pago</span>
+                        <h3 id="totalAffPaid">R$ 0,00</h3>
+                    </div>
+                </div>
+
+            
+
+
+
+
+
+
+
+
+
+
+
+            <!-- NOVO: Menu de Relatórios -->
+            <div class="report-toolbar">
+                <h3 style="font-size: 16px;"><i class="fas fa-file-alt" style="color: var(--accent-dark);"></i> Relatórios para Impressão</h3>
+                <div class="report-btns">
+                    <button class="btn-report" onclick="printReport('today')">Hoje</button>
+                    <button class="btn-report" onclick="printReport('week')">Semana</button>
+                    <button class="btn-report" onclick="printReport('month')">Mês</button>
+                    <button class="btn-report" onclick="printReport('all')">Tudo</button>
+                </div>
+            </div>
+
+            <!-- Tabela de Depósitos -->
+            <h2 class="section-title"><i class="fas fa-file-invoice-dollar" style="color: var(--accent-dark); font-size: 16px;"></i> Depósitos</h2>
+            <div class="table-toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchDeposits" placeholder="Buscar por ID ou Usuário..." oninput="applyFilters()">
+                </div>
+            </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Depósito</th>
+                                <th>ID Usuário</th>
+                                <th>Valor</th>
+                                <th>Comprovante</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depositsBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="depositsPagination"></div>
+            </div>
+
+            <!-- NOVO: Tabela de Saques -->
+            <h2 class="section-title"><i class="fas fa-money-bill-transfer" style="color: var(--red); font-size: 16px;"></i> Saques</h2>
+            <div class="table-toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchWithdrawals" placeholder="Buscar por ID, Usuário ou Chave PIX..." oninput="applyFilters()">
+                </div>
+            </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Saque</th>
+                                <th>ID Usuário</th>
+                                <th>Valor</th>
+                                <th>Chave PIX / Titular</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawalsBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="withdrawalsPagination"></div>
+            </div>
+
+            <!-- Tabela de Usuários -->
+            <h2 class="section-title"><i class="fas fa-user-friends" style="color: #1877f2; font-size: 16px;"></i> Usuários Cadastrados</h2>
+            <div class="table-toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchUsers" placeholder="Buscar por ID, Nome ou E-mail..." oninput="applyFilters()">
+                </div>
+            </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Usuário</th>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Tipo de Conta</th>
+                                <th>Saldo Atual</th>
+                                <th>Total Depósitos</th>
+                                <th>Adicionar Saldo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="usersPagination"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+            <!-- NOVO: Tabela de Afiliados -->
+            <h2 class="section-title"><i class="fas fa-handshake" style="color: #d9a700; font-size: 16px;"></i> Gestão de Afiliados</h2>
+            <div class="table-toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchAffiliates" placeholder="Buscar Afiliado por ID ou Nome..." oninput="applyFilters()">
+                </div>
+            </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Afiliado</th>
+                                <th>Nome</th>
+                                <th>Clientes (FTDs)</th>
+                                <th>Volume Depositado</th>
+                                <th>Prejuízo dos Clientes</th>
+                                <th>Comissão (50%)</th>
+                                <th>CHAVE PIX</th>
+                            </tr>
+                        </thead>
+                        <tbody id="affiliatesBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="affiliatesPagination"></div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ampliar comprovante -->
+    <div class="modal-overlay" id="imgModal" onclick="closeImageModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="closeImageModal()"><i class="fas fa-times"></i></button>
+            <img id="modalImgSrc" src="">
+        </div>
+    </div>
+
+    <script>
+        // Configurações de Paginação
+        const itemsPerPage = 5;
+        let currentUserPage = 1;
+        let currentDepositPage = 1;
+        let currentWithdrawalPage = 1;
+
+        let filteredUsers = [];
+
+        let currentAffiliatePage = 1;
+        let filteredAffiliates = [];
+
+        let filteredDeposits = [];
+        let filteredWithdrawals = [];
+
+        // NOVO: Mantém o admin logado ao dar F5
+        window.onload = function() {
+            if (localStorage.getItem('bynex_admin_session') === 'true') {
+                document.getElementById('loginArea').style.display = 'none';
+                document.getElementById('adminArea').style.display = 'block';
+                loadAdminData();
+            }
+        };
+
+        // NOVO: Função para apagar tudo
+        function resetSystem() {
+            if (confirm('ATENÇÃO! Tem certeza que deseja apagar TODOS os dados (Usuários, Depósitos, Saques e Operações)? Esta ação não pode ser desfeita.')) {
+                if (confirm('Confirma pela última vez? Todo o sistema será resetado para o zero.')) {
+                    localStorage.removeItem('bynex_users');
+                    localStorage.removeItem('bynex_deposits');
+                    localStorage.removeItem('bynex_withdrawals');
+
+                    // Apaga também o histórico de operações de cada usuário
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('bynex_trades_')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+
+                    alert('Sistema resetado com sucesso!');
+                    loadAdminData();
+                }
+            }
+        }
+
+        function checkAdmin() {
+            let pass = document.getElementById('adminPass').value;
+            if (pass === 'admin123') {
+                localStorage.setItem('bynex_admin_session', 'true'); // Salva a sessão
+                document.getElementById('loginArea').style.display = 'none';
+                document.getElementById('adminArea').style.display = 'block';
+                loadAdminData();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('bynex_admin_session'); // Limpa a sessão
+            document.getElementById('loginArea').style.display = 'flex';
+            document.getElementById('adminArea').style.display = 'none';
+            document.getElementById('adminPass').value = '';
+        }
+
+                            function loadAdminData() {
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+
+            // Atualiza Métricas (protegido contra valores vazios)
+            document.getElementById('totalUsers').innerText = users.length;
+            document.getElementById('totalDepPending').innerText = deposits.filter(d => d.status === 'Pendente').length;
+
+            let totalDepAmount = deposits.filter(d => d.status === 'Aprovado').reduce((sum, d) => sum + (d.amount || 0), 0);
+            document.getElementById('totalDepApprovedAmount').innerText = totalDepAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            document.getElementById('totalWdPending').innerText = withdrawals.filter(w => w.status === 'Pendente').length;
+            document.getElementById('totalWdApproved').innerText = withdrawals.filter(w => w.status === 'Aprovado').length;
+            document.getElementById('totalWdRejected').innerText = withdrawals.filter(w => w.status === 'Rejeitado').length;
+
+            let totalBal = users.reduce((sum, u) => sum + (u.balance || 0), 0);
+            document.getElementById('totalBalance').innerText = totalBal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                        // NOVO: Calcula totais de afiliados
+            let totalAffPend = 0, totalAffPd = 0;
+            users.forEach(u => {
+                if (u.totalEarned || u.totalPaid) {
+                    let pend = (u.totalEarned || 0) - (u.totalPaid || 0);
+                    if (pend > 0) totalAffPend += pend;
+                    totalAffPd += (u.totalPaid || 0);
+                }
+            });
+            document.getElementById('totalAffPending').innerText = totalAffPend.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('totalAffPaid').innerText = totalAffPd.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            applyFilters();
+        }
+                     function applyFilters() {
+            let depQuery = document.getElementById('searchDeposits').value.toLowerCase();
+            let wdQuery = document.getElementById('searchWithdrawals').value.toLowerCase();
+            let userQuery = document.getElementById('searchUsers').value.toLowerCase();
+            let affQuery = document.getElementById('searchAffiliates').value.toLowerCase();
+
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+
+            // Filtro Depósitos (protegido contra dados vazios)
+            filteredDeposits = deposits.filter(d => 
+                (d.id || '').toLowerCase().includes(depQuery) || 
+                (d.userId || '').toLowerCase().includes(depQuery)
+            ).reverse();
+
+            // Filtro Saques (protegido contra dados vazios)
+            filteredWithdrawals = withdrawals.filter(w => 
+                (w.id || '').toLowerCase().includes(wdQuery) || 
+                (w.userId || '').toLowerCase().includes(wdQuery) ||
+                (w.pix || '').toLowerCase().includes(wdQuery) ||
+                (w.name || '').toLowerCase().includes(wdQuery)
+            ).reverse();
+
+            // Filtro Usuários
+            filteredUsers = users.filter(u => 
+                (u.id || '').toLowerCase().includes(userQuery) || 
+                (u.name || '').toLowerCase().includes(userQuery) ||
+                (u.email || '').toLowerCase().includes(userQuery)
+            );
+
+            // NOVO: Filtro Afiliados
+            let affiliateIds = new Set(users.map(u => u.referredBy).filter(id => id));
+            filteredAffiliates = users.filter(u => affiliateIds.has(u.id) && ((u.id || '').toLowerCase().includes(affQuery) || (u.name || '').toLowerCase().includes(affQuery)));
+
+            currentUserPage = 1;
+            currentDepositPage = 1;
+            currentWithdrawalPage = 1;
+            currentAffiliatePage = 1;
+
+            renderDepositsTable();
+            renderWithdrawalsTable();
+            renderUsersTable();
+            renderAffiliatesTable();
+        }
+
+        function renderDepositsTable() {
+            let depBody = document.getElementById('depositsBody');
+            depBody.innerHTML = '';
+
+            let totalPages = Math.ceil(filteredDeposits.length / itemsPerPage) || 1;
+            if(currentDepositPage > totalPages) currentDepositPage = totalPages;
+
+            let start = (currentDepositPage - 1) * itemsPerPage;
+            let end = start + itemsPerPage;
+            let pageItems = filteredDeposits.slice(start, end);
+
+            if (pageItems.length === 0) {
+                depBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum depósito encontrado.</td></tr>';
+            } else {
+                pageItems.forEach(d => {
+                    let badgeClass = 'badge-pending';
+                    if (d.status === 'Aprovado') badgeClass = 'badge-approved';
+                    if (d.status === 'Rejeitado') badgeClass = 'badge-rejected';
+
+                    depBody.innerHTML += `<tr>
+                        <td>${d.id}</td>
+                        <td>${d.userId}</td>
+                        <td>R$ ${d.amount.toFixed(2)}</td>
+                        <td><img src="${d.proof}" class="proof-img" onclick="openImageModal('${d.proof}')"></td>
+                        <td><span class="badge ${badgeClass}">${d.status}</span></td>
+                        <td>
+                            ${d.status === 'Pendente' ? `
+                            <button class="btn btn-approve" onclick="approveDeposit('${d.id}')"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-reject" onclick="rejectDeposit('${d.id}')"><i class="fas fa-times"></i></button>
+                            ` : '-'}
+                        </td>
+                    </tr>`;
+                });
+            }
+            renderPagination('deposits', currentDepositPage, totalPages);
+        }
+
+        function renderWithdrawalsTable() {
+            let wdBody = document.getElementById('withdrawalsBody');
+            wdBody.innerHTML = '';
+
+            let totalPages = Math.ceil(filteredWithdrawals.length / itemsPerPage) || 1;
+            if(currentWithdrawalPage > totalPages) currentWithdrawalPage = totalPages;
+
+            let start = (currentWithdrawalPage - 1) * itemsPerPage;
+            let end = start + itemsPerPage;
+            let pageItems = filteredWithdrawals.slice(start, end);
+
+            if (pageItems.length === 0) {
+                wdBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum saque encontrado.</td></tr>';
+            } else {
+                pageItems.forEach(w => {
+                    let badgeClass = 'badge-pending';
+                    if (w.status === 'Aprovado') badgeClass = 'badge-approved';
+                    if (w.status === 'Rejeitado') badgeClass = 'badge-rejected';
+
+                    wdBody.innerHTML += `<tr>
+                        <td>${w.id}</td>
+                        <td>${w.userId}</td>
+                        <td>R$ ${w.amount.toFixed(2)}</td>
+                        <td>${w.pix}<br><span style="color: var(--text-muted); font-size: 11px;">${w.name}</span></td>
+                        <td><span class="badge ${badgeClass}">${w.status}</span></td>
+                        <td>
+                            ${w.status === 'Pendente' ? `
+                            <button class="btn btn-approve" onclick="approveWithdrawal('${w.id}')" title="Aprovar"><i class="fas fa-check"></i></button>
+                            <button class="btn btn-reject" onclick="rejectWithdrawal('${w.id}')" title="Rejeitar (Devolve o dinheiro)"><i class="fas fa-times"></i></button>
+                            ` : '-'}
+                        </td>
+                    </tr>`;
+                });
+            }
+            renderPagination('withdrawals', currentWithdrawalPage, totalPages);
+        }
+
+                function renderUsersTable() {
+            let usersBody = document.getElementById('usersBody');
+            usersBody.innerHTML = '';
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+
+            let totalPages = Math.ceil(filteredUsers.length / itemsPerPage) || 1;
+            if(currentUserPage > totalPages) currentUserPage = totalPages;
+
+            let start = (currentUserPage - 1) * itemsPerPage;
+            let end = start + itemsPerPage;
+            let pageItems = filteredUsers.slice(start, end);
+
+            if (pageItems.length === 0) {
+                usersBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum usuário encontrado.</td></tr>';
+            } else {
+                pageItems.forEach(u => {
+                    let userDepCount = deposits.filter(d => d.userId === u.id).length;
+                    let blockedBadge = u.blocked ? '<span class="badge badge-blocked" style="margin-left:5px;">Bloqueado</span>' : '';
+
+                    usersBody.innerHTML += `<tr>
+                        <td>${u.id}</td>
+                        <td>${u.name} ${blockedBadge}</td>
+                        <td>${u.email}</td>
+                        <td>
+                            <select class="type-select" onchange="changeAccountType('${u.id}', this.value)">
+                                <option value="Comum" ${u.type!=='VIP'&&u.type!=='Marketing'&&u.type!=='Real'?'selected':''}>Comum</option>
+                                <option value="VIP" ${u.type==='VIP'?'selected':''}>VIP</option>
+                                <option value="Marketing" ${u.type==='Marketing'?'selected':''}>Marketing</option>
+                                <option value="Real" ${u.type==='Real'?'selected':''}>Real</option>
+                            </select>
+                        </td>
+                        <td>R$ ${(u.balance || 0).toFixed(2)}</td>
+                        <td><span class="badge badge-approved">${userDepCount}</span></td>
+                        <td>
+                            <div class="add-balance-form">
+                                <input type="number" class="add-balance-input" id="add_${u.id}" placeholder="Valor">
+                                <button class="btn btn-add" onclick="addBalance('${u.id}')"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="btn btn-block" onclick="toggleBlockUser('${u.id}')" title="Bloquear/Desbloquear"><i class="fas fa-ban"></i></button>
+                                <button class="btn btn-reset-user" onclick="resetUserBalance('${u.id}')" title="Zerar Saldo"><i class="fas fa-eraser"></i></button>
+                                <button class="btn btn-delete" onclick="deleteUser('${u.id}')" title="Excluir Conta"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+            }
+            renderPagination('users', currentUserPage, totalPages);
+        }
+
+        function renderPagination(type, currentPage, totalPages) {
+            let containerId = type === 'users' ? 'usersPagination' : (type === 'withdrawals' ? 'withdrawalsPagination' : 'depositsPagination');
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            let prevBtn = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`;
+            container.insertAdjacentHTML('beforeend', prevBtn);
+
+            let maxPagesToShow = 3;
+            let startPage = Math.max(1, currentPage - 1);
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            if (startPage > 1) {
+                container.insertAdjacentHTML('beforeend', `<button class="page-btn" onclick="changePage('${type}', 1)">1</button>`);
+                if (startPage > 2) container.insertAdjacentHTML('beforeend', `<span style="color: var(--text-muted)">...</span>`);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                let activeClass = i === currentPage ? 'active' : '';
+                container.insertAdjacentHTML('beforeend', `<button class="page-btn ${activeClass}" onclick="changePage('${type}', ${i})">${i}</button>`);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) container.insertAdjacentHTML('beforeend', `<span style="color: var(--text-muted)">...</span>`);
+                container.insertAdjacentHTML('beforeend', `<button class="page-btn" onclick="changePage('${type}', ${totalPages})">${totalPages}</button>`);
+            }
+
+            let nextBtn = `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`;
+            container.insertAdjacentHTML('beforeend', nextBtn);
+        }
+
+               function changePage(type, page) {
+            if (type === 'users') {
+                currentUserPage = page;
+                renderUsersTable();
+            } else if (type === 'withdrawals') {
+                currentWithdrawalPage = page;
+                renderWithdrawalsTable();
+            } else if (type === 'affiliates') { // NOVO: Paginação dos Afiliados
+                currentAffiliatePage = page;
+                renderAffiliatesTable();
+            } else {
+                currentDepositPage = page;
+                renderDepositsTable();
+            }
+        }
+
+        function openImageModal(src) {
+            document.getElementById('modalImgSrc').src = src;
+            document.getElementById('imgModal').classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imgModal').classList.remove('show');
+        }
+
+        function approveDeposit(depId) {
+            if (!confirm('Confirmar aprovação deste depósito?')) return;
+
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+
+            let dep = deposits.find(d => d.id === depId);
+            if (dep) {
+                dep.status = 'Aprovado';
+                let user = users.find(u => u.id === dep.userId);
+                if (user) user.balance += dep.amount;
+            }
+
+            localStorage.setItem('bynex_deposits', JSON.stringify(deposits));
+            localStorage.setItem('bynex_users', JSON.stringify(users));
+            loadAdminData();
+        }
+
+        function rejectDeposit(depId) {
+            if (!confirm('Tem certeza que deseja rejeitar este depósito?')) return;
+
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let dep = deposits.find(d => d.id === depId);
+            if (dep) dep.status = 'Rejeitado';
+            localStorage.setItem('bynex_deposits', JSON.stringify(deposits));
+            loadAdminData();
+        }
+
+        // NOVO: Funções de Saque
+        function approveWithdrawal(wdId) {
+            if (!confirm('Confirmar que o PIX foi pago para este saque?')) return;
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let wd = withdrawals.find(w => w.id === wdId);
+            if (wd) wd.status = 'Aprovado';
+            localStorage.setItem('bynex_withdrawals', JSON.stringify(withdrawals));
+            loadAdminData();
+        }
+
+        function rejectWithdrawal(wdId) {
+            if (!confirm('Rejeitar este saque? O valor será DEVOLVIDO para o saldo do usuário.')) return;
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let wd = withdrawals.find(w => w.id === wdId);
+            if (wd) {
+                wd.status = 'Rejeitado';
+                let user = users.find(u => u.id === wd.userId);
+                if (user) user.balance += wd.amount; // Devolve o dinheiro
+            }
+            localStorage.setItem('bynex_withdrawals', JSON.stringify(withdrawals));
+            localStorage.setItem('bynex_users', JSON.stringify(users));
+            loadAdminData();
+        }
+
+        function addBalance(userId) {
+            let inputVal = document.getElementById('add_' + userId).value;
+            let amount = parseFloat(inputVal);
+
+            if (!amount || amount <= 0) {
+                alert('Digite um valor válido.');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === userId);
+            if (user) {
+                user.balance += amount;
+                localStorage.setItem('bynex_users', JSON.stringify(users));
+                loadAdminData();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // NOVAS FUNÇÕES DE GESTÃO DE CONTA E RELATÓRIO
+        function changeAccountType(userId, type) {
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === userId);
+            if (user) { user.type = type; localStorage.setItem('bynex_users', JSON.stringify(users)); }
+        }
+        function toggleBlockUser(userId) {
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === userId);
+            if (user) { user.blocked = !user.blocked; localStorage.setItem('bynex_users', JSON.stringify(users)); loadAdminData(); }
+        }
+        function resetUserBalance(userId) {
+            if (!confirm('Zerar o saldo deste usuário para R$ 0,00?')) return;
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === userId);
+            if (user) { user.balance = 0; localStorage.setItem('bynex_users', JSON.stringify(users)); loadAdminData(); }
+        }
+        function deleteUser(userId) {
+            if (!confirm('EXCLUIR este usuário? Esta ação não pode ser desfeita.')) return;
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            users = users.filter(u => u.id !== userId);
+            localStorage.setItem('bynex_users', JSON.stringify(users));
+            loadAdminData();
+        }
+        function printReport(period) {
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let now = new Date();
+            let filterDate = new Date();
+            if (period === 'today') filterDate.setHours(0,0,0,0);
+            if (period === 'week') filterDate.setDate(now.getDate() - 7);
+            if (period === 'month') filterDate.setMonth(now.getMonth() - 1);
+            if (period === 'all') filterDate = new Date(0);
+
+            let filtDep = deposits.filter(d => { let dDate = d.date ? new Date(d.date) : new Date(); return dDate >= filterDate; });
+            let filtWd = withdrawals.filter(w => new Date(w.date) >= filterDate);
+
+            let win = window.open('', '', 'height=800,width=1000');
+            win.document.write(`<html><head><title>Relatório Bynex Pro</title><style>body{font-family:Arial;padding:20px;} h1{color:#f0b90b;} table{width:100%;border-collapse:collapse;margin-bottom:20px;} th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:12px;} th{background:#f4f7f6;}</style></head><body>`);
+            win.document.write(`<h1>BYNEX PRO - Relatório Financeiro</h1>`);
+            win.document.write(`<p><strong>Período:</strong> ${period === 'today' ? 'Hoje' : period === 'week' ? 'Últimos 7 dias' : period === 'month' ? 'Últimos 30 dias' : 'Tudo'} | <strong>Emitido em:</strong> ${now.toLocaleString('pt-BR')}</p>`);
+            win.document.write(`<h2>Resumo</h2><table><tr><th>Total Usuários</th><th>Depósitos Aprovados</th><th>Saques Aprovados</th><th>Saldo em Contas</th></tr>`);
+            win.document.write(`<tr><td>${users.length}</td><td>R$ ${deposits.filter(d=>d.status==='Aprovado').reduce((s,d)=>s+d.amount,0).toFixed(2)}</td><td>R$ ${withdrawals.filter(w=>w.status==='Aprovado').reduce((s,w)=>s+w.amount,0).toFixed(2)}</td><td>R$ ${users.reduce((s,u)=>s+u.balance,0).toFixed(2)}</td></tr></table>`);
+            win.document.write(`<h2>Depósitos (${filtDep.length})</h2><table><tr><th>ID</th><th>Usuário</th><th>Valor</th><th>Status</th><th>Data</th></tr>`);
+            filtDep.forEach(d => win.document.write(`<tr><td>${d.id}</td><td>${d.userId}</td><td>R$ ${d.amount.toFixed(2)}</td><td>${d.status}</td><td>${d.date || 'N/A'}</td></tr>`));
+            win.document.write(`</table>`);
+            win.document.write(`<h2>Saques (${filtWd.length})</h2><table><tr><th>ID</th><th>Usuário</th><th>Valor</th><th>Titular</th><th>Chave PIX</th><th>Status</th><th>Data</th></tr>`);
+            filtWd.forEach(w => win.document.write(`<tr><td>${w.id}</td><td>${w.userId}</td><td>R$ ${w.amount.toFixed(2)}</td><td>${w.name}</td><td>${w.pix}</td><td>${w.status}</td><td>${w.date}</td></tr>`));
+            win.document.write(`</table>`);
+            win.document.write(`</body></html>`);
+            win.document.close();
+            win.print();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       // NOVAS FUNÇÕES DOS AFILIADOS (CÁLCULO EM TEMPO REAL)
+        function renderAffiliatesTable() {
+            let affBody = document.getElementById('affiliatesBody'); 
+            affBody.innerHTML = '';
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let deposits = JSON.parse(localStorage.getItem('bynex_deposits')) || [];
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            
+            let totalPages = Math.ceil(filteredAffiliates.length / itemsPerPage) || 1;
+            if(currentAffiliatePage > totalPages) currentAffiliatePage = totalPages;
+            let pageItems = filteredAffiliates.slice((currentAffiliatePage - 1) * itemsPerPage, currentAffiliatePage * itemsPerPage);
+
+            if (pageItems.length === 0) { 
+                affBody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum afiliado encontrado.</td></tr>'; 
+            } else {
+                pageItems.forEach(a => {
+                    let myClients = users.filter(u => u.referredBy === a.id);
+                    let ftds = 0, totalNetLoss = 0;
+
+                    myClients.forEach(c => {
+                        let cDep = deposits.filter(d => d.userId === c.id && d.status === 'Aprovado').reduce((s, d) => s + (d.amount || 0), 0);
+                        let cWd = withdrawals.filter(w => w.userId === c.id && w.status === 'Aprovado').reduce((s, w) => s + (w.amount || 0), 0);
+                        if (cDep > 0) ftds++;
+                        let netLoss = (cDep - cWd) - (c.balance || 0);
+                        if (netLoss > 0) totalNetLoss += netLoss;
+                    });
+
+                    let rate = a.commissionRate || 50; 
+                    
+                    // CALCULA EM TEMPO REAL: Total gerado - Total já pago
+                    let dynamicEarned = totalNetLoss * (rate / 100);
+                    let totalPaid = a.totalPaid || 0;
+                    let pendingComm = dynamicEarned - totalPaid;
+                    if (pendingComm < 0) pendingComm = 0;
+
+                    let statusText = pendingComm > 0 ? 'Em Aberto' : 'Quitado';
+                    let badgeClass = pendingComm > 0 ? 'badge-aff-pending' : 'badge-aff-paid';
+                    let pixKey = a.pixKey ? a.pixKey : '<span style="color:var(--text-muted)">Não cadastrada</span>';
+                    let payDate = a.paymentDate ? new Date(a.paymentDate+'T00:00:00').toLocaleDateString('pt-BR') : '<span style="color:var(--text-muted)">A definir</span>';
+
+                    affBody.innerHTML += `<tr>
+                        <td>${a.id}</td>
+                        <td>${a.name}</td>
+                        <td>${myClients.length} (${ftds} FTDs)</td>
+                        <td>R$ ${totalNetLoss.toFixed(2)}</td>
+                        <td>
+                            <select class="type-select" onchange="changeAffiliateRate('${a.id}', this.value)">
+                                <option value="50" ${rate==50?'selected':''}>50%</option>
+                                <option value="40" ${rate==40?'selected':''}>40%</option>
+                                <option value="60" ${rate==60?'selected':''}>60%</option>
+                            </select>
+                        </td>
+                        <td><span class="badge ${badgeClass}">R$ ${pendingComm.toFixed(2)}</span><br><span style="color: var(--text-muted); font-size: 10px;">${statusText}</span></td>
+                        <td style="max-width: 150px; word-break: break-all;">${pixKey}</td>
+                        <td>${payDate}<br><input type="date" onchange="setPaymentDate('${a.id}', this.value)" style="font-size:10px; margin-top:4px; border:1px solid var(--border); border-radius:4px; padding:2px;"></td>
+                        <td>
+                            ${pendingComm > 0 ? `<button class="btn btn-pay-aff" onclick="payAffiliate('${a.id}')" title="Dar Baixa (Quitado)"><i class="fas fa-check"></i> Pago</button>` : '-'}
+                        </td>
+                    </tr>`;
+                });
+            }
+            renderPagination('affiliates', currentAffiliatePage, totalPages);
+        }
+
+        // FUNÇÕES DE CONFIGURAÇÃO DO AFILIADO
+        function changeAffiliateRate(affId, rate) {
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let aff = users.find(u => u.id === affId);
+            if (aff) { aff.commissionRate = parseInt(rate); localStorage.setItem('bynex_users', JSON.stringify(users)); }
+        }
+
+        function setPaymentDate(affId, date) {
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let aff = users.find(u => u.id === affId);
+            if (aff) { aff.paymentDate = date; localStorage.setItem('bynex_users', JSON.stringify(users)); loadAdminData(); }
+        }
+
+                function payAffiliate(affId) {
+            if (!confirm('Confirmar o pagamento deste afiliado? O valor será quitado e registrado no histórico dele.')) return;
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let aff = users.find(u => u.id === affId);
+            if (aff) {
+                let pendingComm = (aff.totalEarned || 0) - (aff.totalPaid || 0);
+                if (pendingComm > 0) {
+                    aff.totalPaid = (aff.totalPaid || 0) + pendingComm;
+                    if (!aff.paymentHistory) aff.paymentHistory = [];
+                    aff.paymentHistory.push({ date: new Date().toLocaleString('pt-BR'), amount: pendingComm });
+                }
+                aff.paymentDate = ''; 
+                localStorage.setItem('bynex_users', JSON.stringify(users));
+                loadAdminData();
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
