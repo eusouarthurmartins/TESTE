@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bynex Pro</title>
+
+
+       <!-- Favicon (Ícone da aba - Desenhado em código) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
+
+    <!-- Open Graph (Prévia no WhatsApp - Imagem gerada com as mesmas cores) -->
+    <meta property="og:title" content="Bynex Pro - Plataforma de Trading">
+    <meta property="og:description" content="A corretora profissional para suas operações. Segura, rápida e completa.">
+    <meta property="og:image" content="https://dummyimage.com/1200x630/0b0e11/f0b90b&text=BYNEX+PRO">
+    <meta property="og:type" content="website">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0b0e11;
+            --bg-panel: #151a21;
+            --bg-sidebar: #0e1217;
+            --bg-hover: #1f2530;
+            --green: #00c853;
+            --green-hover: #00e676;
+            --red: #ff3d57;
+            --red-hover: #ff5252;
+            --text-main: #eaecef;
+            --text-muted: #848e9c;
+            --accent: #f0b90b;
+            --border: #2b313a;
+        }
+
+        body.light-theme {
+            --bg-dark: #f8fafc;
+            --bg-panel: #ffffff;
+            --bg-sidebar: #f1f5f9;
+            --bg-hover: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; overflow: hidden; }
+
+        header { background-color: var(--bg-sidebar); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 20; }
+        .logo { font-weight: 800; font-size: 22px; color: var(--accent); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-icon { color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .header-icon:hover { color: var(--accent); }
+        .balance { background: var(--bg-panel); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; font-weight: 600; }
+        .balance span { color: var(--text-muted); font-weight: 400; font-size: 12px; display: block; }
+        .balance-value { color: var(--green); }
+
+        /* NOVO: Estilo do Seletor de Perfil */
+        .profile-selector { position: relative; display: flex; flex-direction: column; font-size: 10px; gap: 2px; align-items: center; justify-content: center; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s; white-space: nowrap; }
+        .profile-selector:hover { background: var(--bg-hover); }
+        .profile-selector i { font-size: 20px; color: var(--text-muted); transition: 0.2s; }
+        .profile-selector:hover i { color: var(--accent); }
+        .profile-selector span { color: var(--text-muted); }
+        .profile-dropdown { position: absolute; top: 55px; right: 0; width: 200px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; padding: 5px; z-index: 100; }
+        .profile-dropdown.show { display: flex; }
+        .profile-item { padding: 10px; border-radius: 4px; display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; color: var(--text-main); }
+        .profile-item:hover { background: var(--bg-hover); color: var(--accent); }
+        .profile-item.danger:hover { color: var(--red); }
+
+        .container { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+
+        .sidebar { width: 70px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 15px; border-right: 1px solid var(--border); flex-shrink: 0; z-index: 15; }
+        .sidebar-icon { color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.2s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; position: relative; }
+        .sidebar-icon:hover { background: var(--bg-hover); color: var(--accent); }
+        .sidebar-icon.active { color: var(--accent); background: var(--bg-hover); }
+        .sidebar-divider { width: 30px; height: 1px; background: var(--border); margin: 5px 0; }
+
+        .chart-area { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-dark); min-width: 0; }
+        .asset-header { padding: 10px 15px; background-color: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 20px; flex-shrink: 0; position: relative; }
+        
+        .asset-selector { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 10px; border-radius: 6px; transition: 0.2s; }
+        .asset-selector:hover { background: var(--bg-hover); }
+        .asset-name { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .asset-dropdown { position: absolute; top: 50px; left: 15px; width: 220px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; padding: 5px; z-index: 100; }
+        .asset-dropdown.show { display: flex; }
+        .asset-item { padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; cursor: pointer; }
+        .asset-item:hover { background: var(--bg-hover); color: var(--accent); }
+        .asset-item span { color: var(--green); font-size: 12px; font-weight: 600; }
+
+        .payout-badge { background: rgba(0, 200, 83, 0.15); color: var(--green); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .live-price { margin-left: auto; font-family: 'monospace'; font-weight: 700; font-size: 18px; padding: 4px 12px; background: var(--bg-dark); border-radius: 4px; border: 1px solid var(--border); transition: color 0.1s; }
+
+        .chart-wrapper { flex: 1; display: flex; flex-direction: column; position: relative; min-height: 0; }
+        .chart-container { flex: 1; position: relative; overflow: hidden; }
+        #priceChart { width: 100%; height: 100%; display: block; cursor: grab; }
+        #priceChart.cursor-grabbing { cursor: grabbing; }
+        #priceChart.cursor-crosshair { cursor: crosshair; }
+
+        .chart-scroll-container { height: 20px; background: var(--bg-panel); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 10px; flex-shrink: 0; }
+        .chart-scrollbar { width: 100%; -webkit-appearance: none; appearance: none; height: 6px; background: var(--bg-dark); border-radius: 3px; outline: none; }
+        .chart-scrollbar::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 15px; height: 15px; background: var(--accent); border-radius: 50%; cursor: pointer; }
+        .chart-scrollbar::-moz-range-thumb { width: 15px; height: 15px; background: var(--accent); border-radius: 50%; cursor: pointer; border: none; }
+
+        .trade-panel { width: 340px; background-color: var(--bg-panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .panel-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .section-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
+        
+        .input-group { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; transition: 0.2s; }
+        .input-group:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.1); }
+        .input-group input { background: none; border: none; color: var(--text-main); font-size: 20px; width: 100%; outline: none; text-align: right; font-weight: 600; padding: 12px; }
+        .input-group .currency-prefix { color: var(--text-muted); font-size: 18px; margin-right: 5px; margin-left: 12px; font-weight: 600; }
+
+        .quick-values { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 8px; }
+        .quick-btn { background: var(--bg-dark); color: var(--text-muted); border: 1px solid var(--border); padding: 6px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
+        .quick-btn:hover { color: var(--text-main); border-color: var(--accent); }
+        .profit-row { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 14px; padding: 10px; background: var(--bg-dark); border-radius: 6px; }
+        .profit-value { color: var(--green); font-weight: 700; font-size: 18px; }
+        
+        .time-row { display: flex; gap: 10px; margin-top: 10px; }
+        .time-btn { flex: 1; background: var(--bg-dark); color: var(--text-muted); border: 1px solid var(--border); padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
+        .time-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        .actions { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-action { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.2s; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-higher { background: var(--green); }
+        .btn-lower { background: var(--red); }
+        .btn-higher:hover { background: var(--green-hover); }
+        .btn-lower:hover { background: var(--red-hover); }
+
+        .open-trades { padding: 0 20px 20px; }
+        .trade-card { background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .trade-info { font-size: 12px; }
+        .trade-info span { display: block; color: var(--text-muted); }
+        .trade-countdown { font-family: monospace; font-size: 18px; font-weight: 700; }
+        .direction-tag { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+        .dir-high { background: rgba(0, 200, 83, 0.2); color: var(--green); }
+        .dir-low { background: rgba(255, 61, 87, 0.2); color: var(--red); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
+        .modal-overlay.show { display: flex; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 30px; width: 420px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto; animation: slideUpModal 0.3s ease; }
+        @keyframes slideUpModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .modal-title i { color: var(--accent); }
+        .close-btn { background: var(--bg-dark); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 50%; color: var(--text-muted); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .close-btn:hover { color: var(--red); border-color: var(--red); }
+        
+        .modal-body { display: flex; flex-direction: column; gap: 15px; }
+        .input-label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; }
+        .modal-input-group { display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; transition: 0.2s; }
+        .modal-input-group:focus-within { border-color: var(--accent); }
+        .modal-input-group i { padding-left: 15px; color: var(--text-muted); }
+        .modal-input { width: 100%; padding: 15px; background: none; border: none; color: var(--text-main); font-size: 16px; outline: none; font-weight: 600; }
+        .modal-btn { padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; text-align: center; margin-top: 10px; transition: 0.2s; box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3); }
+        .modal-btn:hover { filter: brightness(1.1); }
+        .modal-info { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 5px; }
+        
+        .chat-box { display: flex; flex-direction: column; height: 400px; }
+        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+        .chat-msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
+        .chat-msg.bot { background: var(--bg-dark); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--accent); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: 600; }
+        .chat-input-area { display: flex; gap: 10px; margin-top: 15px; }
+        .chat-input-area input { flex: 1; padding: 12px 15px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); outline: none; }
+        .chat-input-area input:focus { border-color: var(--accent); }
+        .chat-input-area button { padding: 12px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .clear-chat-btn { background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .clear-chat-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+        .history-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+        .history-table th { text-align: left; padding: 12px 10px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; }
+        .history-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); }
+        .status-processing { color: var(--accent); font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+        
+        .result-popup { position: absolute; top: 20px; right: 20px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 50; animation: slideInRight 0.3s ease; }
+        .popup-win { border-left: 4px solid var(--green); }
+        .popup-loss { border-left: 4px solid var(--red); }
+        .popup-close { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; }
+        .popup-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .popup-amount { font-size: 24px; font-weight: 800; }
+        .popup-details { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+        @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .toast { position: fixed; bottom: 170px; left: 50%; transform: translateX(-50%); background: var(--bg-panel); padding: 15px 25px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 100; font-weight: 600; align-items: center; gap: 10px; }
+        .toast.show { display: flex; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 50px; padding: 10px 0; gap: 10px; }
+            .sidebar-icon { width: 35px; height: 35px; font-size: 16px; }
+            .sidebar-divider { display: none; }
+            
+            .chart-area { padding-bottom: 230px; } 
+            
+            .trade-panel { width: 100%; height: 220px; border-left: none; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; z-index: 20; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); background: var(--bg-panel); }
+            .trade-panel .panel-content { flex-direction: row; padding: 10px; gap: 10px; overflow-x: auto; }
+            .trade-panel .panel-content > div { flex: 1; min-width: 160px; }
+            .trade-panel .open-trades { display: none; } 
+            
+            .actions { flex-direction: row; margin-top: 5px; }
+            .btn-action { flex-direction: row; padding: 10px; font-size: 12px; justify-content: center; }
+            .quick-values { grid-template-columns: repeat(2, 1fr); }
+            .profit-row { flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 5px; }
+            .profit-value { font-size: 14px; }
+            
+            .asset-header { padding: 5px 10px; gap: 10px; }
+            .asset-name { font-size: 14px; }
+            .payout-badge { font-size: 10px; padding: 2px 6px; }
+            .live-price { font-size: 14px; padding: 2px 8px; }
+            
+            .header-right { gap: 5px; }
+            .balance { padding: 6px 10px; font-size: 14px; }
+            .balance span { font-size: 10px; }
+            .profile-selector { padding: 5px 5px; }
+        }
+    </style>
+</head>
+<body class="light-theme">
+
+    <header>
+        <div class="logo">BYNEX <span style="font-size:10px; color: var(--text-muted)">PRO</span></div>
+        <div class="header-right">
+            <span id="serverTime" style="font-family: monospace; font-size: 14px; color: var(--text-muted); margin-right: 10px;">--:--:--</span>
+            <div class="header-icon" onclick="toggleTheme()" title="Trocar Tema">
+                <i class="fas fa-sun" id="themeIcon"></i>
+            </div>
+            <div class="balance">
+                <span>Saldo da Conta</span>
+                <div class="balance-value" id="balanceDisplay">R$ 0,00</div>
+            </div>
+            
+            <!-- ALTERADO: Menu de Perfil Suspenso -->
+            <div class="profile-selector" onclick="toggleProfileMenu(event)">
+                <i class="fas fa-user-circle"></i>
+                <span id="userIdDisplay">ID: ...</span>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-item" onclick="openModal('termsModal')">
+                        <i class="fas fa-file-contract"></i> Termos da Corretora
+                    </div>
+                    <div class="profile-item danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-icon active" title="Operar" onclick="changeTab(this)"><i class="fas fa-chart-line"></i></div>
+            <div class="sidebar-icon" title="Histórico" onclick="openModal('historyModal')"><i class="fas fa-history"></i></div>
+            <div class="sidebar-icon" title="Depositar" onclick="window.location.href='pagamento.html'"><i class="fas fa-wallet"></i></div>
+            <div class="sidebar-icon" title="Saque" onclick="openModal('withdrawModal')"><i class="fas fa-dollar-sign"></i></div>
+            <div class="sidebar-icon" title="Histórico de Saques" onclick="openModal('wdHistoryModal')"><i class="fas fa-receipt"></i></div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-icon" title="Cursor (Arrastar)" onclick="setTool('cursor', this)"><i class="fas fa-mouse-pointer"></i></div>
+            <div class="sidebar-icon" title="Linha Horizontal" onclick="setTool('horizontal', this)"><i class="fas fa-grip-lines"></i></div>
+            <div class="sidebar-icon" title="Linha Vertical" onclick="setTool('vertical', this)"><i class="fas fa-grip-lines-vertical"></i></div>
+            <div class="sidebar-icon" title="Apagar Marcações" onclick="clearDrawings()"><i class="fas fa-eraser"></i></div>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-icon" title="Suporte / Chat" onclick="openModal('chatModal')"><i class="fas fa-headset"></i></div>
+        </aside>
+
+        <main class="chart-area">
+            <div class="asset-header">
+                <div class="asset-selector" onclick="toggleAssetDropdown(event)">
+                    <div class="asset-name" id="assetName">🇪🇺 EUR/USD (OTC)</div>
+                    <i class="fas fa-chevron-down" style="font-size: 12px; color: var(--text-muted);"></i>
+                    <div class="asset-dropdown" id="assetDropdown">
+                        <div class="asset-item" onclick="switchAsset('EUR/USD', '🇪🇺 EUR/USD (OTC)', 87)">
+                            <span>🇪🇺 EUR/USD (OTC)</span> <span>+87%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('GBP/USD', '🇬🇧 GBP/USD (OTC)', 85)">
+                            <span>🇬🇧 GBP/USD (OTC)</span> <span>+85%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('USD/JPY', '🇺🇸 USD/JPY (OTC)', 82)">
+                            <span>🇺🇸 USD/JPY (OTC)</span> <span>+82%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('AUD/CAD', '🇦🇺 AUD/CAD (OTC)', 80)">
+                            <span>🇦🇺 AUD/CAD (OTC)</span> <span>+80%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('USD/BRL', '🇺🇸 USD/BRL (OTC)', 75)">
+                            <span>🇺🇸 USD/BRL (OTC)</span> <span>+75%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('EUR/GBP', '🇪🇺 EUR/GBP (OTC)', 84)">
+                            <span>🇪🇺 EUR/GBP (OTC)</span> <span>+84%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('NZD/USD', '🇳🇿 NZD/USD (OTC)', 81)">
+                            <span>🇳🇿 NZD/USD (OTC)</span> <span>+81%</span>
+                        </div>
+                        <div class="asset-item" onclick="switchAsset('USD/CHF', '🇺🇸 USD/CHF (OTC)', 83)">
+                            <span>🇺🇸 USD/CHF (OTC)</span> <span>+83%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="payout-badge" id="payoutBadge">+87%</div>
+                <div class="live-price" id="livePrice">1.05000</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-container" id="chartContainer">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                <div class="chart-scroll-container">
+                    <input type="range" class="chart-scrollbar" id="chartScroll" min="0" max="0" value="0">
+                </div>
+            </div>
+        </main>
+
+        <aside class="trade-panel">
+            <div class="panel-content">
+                <div>
+                    <div class="section-title">Valor da Operação</div>
+                    <div class="input-group">
+                        <span class="currency-prefix">R$</span>
+                        <input type="text" id="investmentInput" value="5,00" oninput="formatCurrencyInput(this)">
+                    </div>
+                    <div class="quick-values">
+                        <button class="quick-btn" onclick="adjustInvestment(1)">+ 1</button>
+                        <button class="quick-btn" onclick="adjustInvestment(5)">+ 5</button>
+                        <button class="quick-btn" onclick="adjustInvestment(10)">+ 10</button>
+                        <button class="quick-btn" onclick="setMaxInvestment()">Máx</button>
+                    </div>
+                    <div class="profit-row">
+                        <span>Lucro na Operação:</span>
+                        <span class="profit-value" id="profitDisplay">+ R$ 4,35</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-title">Tempo de Expiração</div>
+                    <div class="time-row">
+                        <button class="time-btn active" onclick="setExpiration(5, this)">5s</button>
+                        <button class="time-btn" onclick="setExpiration(15, this)">15s</button>
+                        <button class="time-btn" onclick="setExpiration(30, this)">30s</button>
+                        <button class="time-btn" onclick="setExpiration(60, this)">1m</button>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-action btn-higher" onclick="executeTrade('HIGHER')">
+                            <span>Comprar</span> <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="btn-action btn-lower" onclick="executeTrade('LOWER')">
+                            <span>Vender</span> <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="open-trades">
+                <div class="section-title">Operações Abertas</div>
+                <div id="openTradesContainer">
+                    <div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px;">Nenhuma operação aberta</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-history"></i> Histórico de Operações</div>
+                <button class="close-btn" onclick="closeModal('historyModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <table class="history-table">
+                    <thead><tr><th>Hora</th><th>Tipo</th><th>Entrada</th><th>Saída</th><th>Resultado</th></tr></thead>
+                    <tbody id="historyModalBody"><tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Sem histórico ainda</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="wdHistoryModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-receipt"></i> Histórico de Saques</div>
+                <button class="close-btn" onclick="closeModal('wdHistoryModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <table class="history-table">
+                    <thead><tr><th>Data</th><th>Valor</th><th>Chave PIX</th><th>Status</th></tr></thead>
+                    <tbody id="wdHistoryBody"><tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhum saque solicitado.</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOVO: Modal de Termos da Corretora -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-file-contract"></i> Termos da Corretora</div>
+                <button class="close-btn" onclick="closeModal('termsModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="color: var(--text-muted); font-size: 14px; line-height: 1.6; text-align: justify;">
+                    <p style="margin-bottom: 15px;">Bem-vindo aos Termos de Uso da Bynex Pro. Ao utilizar nossa plataforma, você concorda com os seguintes termos:</p>
+                    <p style="margin-bottom: 10px;"><strong>1. Natureza da Plataforma:</strong> A Bynex Pro é uma plataforma destinada à disponibilização de serviços e operações relacionadas ao mercado financeiro, conforme os produtos e serviços disponibilizados aos usuários.
+
+As operações realizadas por meio da plataforma podem envolver valores reais e estão sujeitas às condições, regras, custos, limites e riscos aplicáveis a cada produto ou serviço..</p>
+                    <p style="margin-bottom: 10px;"><strong>2. Idade Mínima:</strong> O usuário declara ter mais de 18 anos de idade ao utilizar este serviço.</p>
+                    <p style="margin-bottom: 10px;"><strong>3. Riscos:</strong> O usuário reconhece que operações no mercado financeiro envolvem riscos e que podem resultar em perdas financeiras, inclusive perda parcial ou total dos valores envolvidos, dependendo do produto ou operação realizada.
+
+Resultados obtidos anteriormente, históricos de desempenho ou informações apresentadas na plataforma não constituem garantia de resultados futuros.
+
+O usuário é responsável por avaliar os riscos envolvidos antes de realizar qualquer operação e deve utilizar a plataforma de acordo com seu perfil e capacidade financeira.</p>
+                    <p><strong>4. Contas e Segurança:</strong> O usuário é responsável por manter a confidencialidade de seu ID e sessão.</p>
+                </div>
+                <button class="modal-btn" onclick="closeModal('termsModal')">Entendi e Concordo</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="depositModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-wallet"></i> Depositar Fundos</div>
+                <button class="close-btn" onclick="closeModal('depositModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="input-label">Valor do Depósito</div>
+                    <div class="modal-input-group">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <input type="text" id="depositAmount" class="modal-input" placeholder="0,00" oninput="formatCurrencyInput(this)">
+                    </div>
+                </div>
+                <button class="modal-btn" onclick="makeDeposit()">Confirmar Depósito</button>
+                <div class="modal-info">Adicione saldo virtual para testar suas estratégias.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-dollar-sign"></i> Saque via PIX</div>
+                <button class="close-btn" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="withdrawBody">
+                <div>
+                    <div class="input-label">Valor do Saque</div>
+                    <div class="modal-input-group">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <input type="text" id="wdAmount" class="modal-input" placeholder="0,00" oninput="formatCurrencyInput(this)">
+                    </div>
+                </div>
+                <div>
+                    <div class="input-label">Chave PIX</div>
+                    <div class="modal-input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="wdPix" class="modal-input" placeholder="CPF, E-mail ou Celular">
+                    </div>
+                </div>
+                <div>
+                    <div class="input-label">Nome do Titular</div>
+                    <div class="modal-input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="wdName" class="modal-input" placeholder="Nome Completo">
+                    </div>
+                </div>
+                <button class="modal-btn" onclick="requestWithdraw()">Solicitar Saque</button>
+                <div class="modal-info">O valor será creditado em até 3 dias úteis.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-headset"></i> Suporte Bynex</div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="clear-chat-btn" onclick="clearChatHistory()"><i class="fas fa-broom"></i> Limpar</button>
+                    <button class="close-btn" onclick="closeModal('chatModal')"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="chat-box">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-msg bot">Olá! Bem-vindo ao suporte da Bynex Pro.</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><span id="toastIcon"></span> <span id="toastMsg"></span></div>
+
+    <script>
+        const canvas = document.getElementById('priceChart');
+        const ctx = canvas.getContext('2d');
+        const chartContainer = document.getElementById('chartContainer');
+        const scrollBar = document.getElementById('chartScroll');
+        
+        let balance = 0.00;
+        let currentExpiration = 5;
+        let activeTrades = [];
+        let tradeIdCounter = 1;
+        let isLightTheme = true;
+        let historyData = [];
+        
+        let visibleCount = 40;
+        let startIndex = 0;
+        
+        let activeTool = 'cursor';
+        let drawings = [];
+        let chatState = 'idle';
+
+        let assetsConfig = {
+            'EUR/USD': { name: '🇪🇺 EUR/USD (OTC)', payout: 87, basePrice: 1.05000, vol: 0.00020, decimals: 5 },
+            'GBP/USD': { name: '🇬🇧 GBP/USD (OTC)', payout: 85, basePrice: 1.26000, vol: 0.00025, decimals: 5 },
+            'USD/JPY': { name: '🇺🇸 USD/JPY (OTC)', payout: 82, basePrice: 149.500, vol: 0.02000, decimals: 3 },
+            'AUD/CAD': { name: '🇦🇺 AUD/CAD (OTC)', payout: 80, basePrice: 0.90000, vol: 0.00025, decimals: 5 },
+            'USD/BRL': { name: '🇺🇸 USD/BRL (OTC)', payout: 75, basePrice: 5.10000, vol: 0.00100, decimals: 3 },
+            'EUR/GBP': { name: '🇪🇺 EUR/GBP (OTC)', payout: 84, basePrice: 0.85000, vol: 0.00020, decimals: 5 },
+            'NZD/USD': { name: '🇳🇿 NZD/USD (OTC)', payout: 81, basePrice: 0.62000, vol: 0.00020, decimals: 5 },
+            'USD/CHF': { name: '🇺🇸 USD/CHF (OTC)', payout: 83, basePrice: 0.88000, vol: 0.00022, decimals: 5 }
+        };
+        let assetsData = {};
+        let activeAsset = 'EUR/USD';
+        let currentPayout = 0.87;
+
+        window.onload = function() {
+            let session = localStorage.getItem('bynex_session');
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === session);
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            balance = user.balance;
+            
+            resizeCanvas();
+            
+            for (let key in assetsConfig) {
+                let config = assetsConfig[key];
+                let arr = [];
+                let price = config.basePrice;
+                for (let i = 0; i < 200; i++) {
+                    let open = price;
+                    let close = open + (Math.random() - 0.5) * config.vol * 2;
+                    let high = Math.max(open, close) + Math.random() * config.vol;
+                    let low = Math.min(open, close) - Math.random() * config.vol;
+                    arr.push({ open: open, close: close, high: high, low: low });
+                    price = close;
+                }
+                assetsData[key] = { candles: arr, currentPrice: price };
+            }
+            
+            startIndex = Math.max(0, assetsData[activeAsset].candles.length - visibleCount);
+            updateScrollbar();
+            drawChart();
+            
+            formatCurrencyInput(document.getElementById('investmentInput'));
+            
+            setInterval(simulateMarket, 800);
+            setInterval(updateClock, 1000);
+            updateClock();
+            updateBalance();
+            loadUserHistory(); // <-- A LINHA NOVA VAI AQUI
+            setupChartEvents();
+        };
+
+        function formatCurrencyInput(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v === '') v = '0';
+            v = (parseInt(v) / 100).toFixed(2);
+            v = v.replace('.', ',');
+            v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            input.value = v;
+            if (input.id === 'investmentInput') updateProfitDisplay();
+        }
+
+        function parseCurrency(str) {
+            if (!str) return 0;
+            return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        window.addEventListener('resize', function() {
+            resizeCanvas();
+            drawChart();
+        });
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+
+        function getViewBounds() {
+            let viewCandles = assetsData[activeAsset].candles.slice(startIndex, startIndex + visibleCount);
+            let allPrices = [];
+            for (let i = 0; i < viewCandles.length; i++) {
+                allPrices.push(viewCandles[i].high, viewCandles[i].low);
+            }
+            for (let i = 0; i < activeTrades.length; i++) {
+                if (activeTrades[i].asset === activeAsset) allPrices.push(activeTrades[i].entryPrice);
+            }
+            for (let i = 0; i < drawings.length; i++) {
+                if (drawings[i].asset === activeAsset && drawings[i].type === 'h') allPrices.push(drawings[i].price);
+            }
+            
+            let minPrice = allPrices[0];
+            let maxPrice = allPrices[0];
+            for (let i = 1; i < allPrices.length; i++) {
+                if (allPrices[i] < minPrice) minPrice = allPrices[i];
+                if (allPrices[i] > maxPrice) maxPrice = allPrices[i];
+            }
+            minPrice -= assetsConfig[activeAsset].vol * 2;
+            maxPrice += assetsConfig[activeAsset].vol * 2;
+            let range = maxPrice - minPrice;
+            if (range === 0) range = 0.00010;
+            
+            return { minPrice: minPrice, maxPrice: maxPrice, range: range };
+        }
+
+        function drawChart() {
+            if (!canvas.width || !canvas.height) return;
+            
+            let chartBg = isLightTheme ? '#ffffff' : '#0b0e11';
+            let gridColor = isLightTheme ? '#f1f5f9' : '#1a1d24';
+            let textColor = isLightTheme ? '#64748b' : '#848e9c';
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = chartBg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 10;
+            const rightPadding = canvas.width * 0.18; 
+            const chartWidth = canvas.width - padding - rightPadding;
+            const candleWidth = chartWidth / visibleCount;
+            let dec = assetsConfig[activeAsset].decimals;
+            
+            let bounds = getViewBounds();
+            let minPrice = bounds.minPrice;
+            let maxPrice = bounds.maxPrice;
+            let range = bounds.range;
+
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = 1;
+            ctx.font = "11px Inter, sans-serif";
+            ctx.fillStyle = textColor;
+            ctx.textAlign = "right";
+            for (let i = 0; i < 5; i++) {
+                let y = (canvas.height / 5) * i + 20;
+                let priceLabel = (maxPrice - (range / 4) * i).toFixed(dec);
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+                ctx.fillText(priceLabel, canvas.width - 5, y - 5);
+            }
+            ctx.textAlign = "left";
+
+            for (let i = 0; i < drawings.length; i++) {
+                let d = drawings[i];
+                if (d.asset !== activeAsset) continue;
+                if (d.type === 'h') {
+                    let y = canvas.height - ((d.price - minPrice) / range) * (canvas.height - 40) - 20;
+                    ctx.strokeStyle = '#f0b90b';
+                    ctx.setLineDash([4, 2]);
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width - rightPadding, y); ctx.stroke();
+                } else if (d.type === 'v') {
+                    let relIndex = d.index - startIndex;
+                    if (relIndex >= 0 && relIndex <= visibleCount) {
+                        let x = padding + (relIndex * candleWidth) + (candleWidth * 0.3);
+                        ctx.strokeStyle = '#f0b90b';
+                        ctx.setLineDash([4, 2]);
+                        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                    }
+                }
+            }
+            ctx.setLineDash([]);
+
+            for (let i = 0; i < visibleCount; i++) {
+                let arrIndex = startIndex + i;
+                if (arrIndex >= assetsData[activeAsset].candles.length) break;
+                
+                let c = assetsData[activeAsset].candles[arrIndex];
+                let x = padding + (i * candleWidth);
+                let w = candleWidth * 0.6;
+                let yHigh = canvas.height - ((c.high - minPrice) / range) * (canvas.height - 40) - 20;
+                let yLow = canvas.height - ((c.low - minPrice) / range) * (canvas.height - 40) - 20;
+                let yOpen = canvas.height - ((c.open - minPrice) / range) * (canvas.height - 40) - 20;
+                let yClose = canvas.height - ((c.close - minPrice) / range) * (canvas.height - 40) - 20;
+
+                ctx.strokeStyle = c.close >= c.open ? '#00c853' : '#ff3d57';
+                ctx.fillStyle = c.close >= c.open ? '#00c853' : '#ff3d57';
+                
+                ctx.beginPath();
+                ctx.moveTo(x + w / 2, yHigh);
+                ctx.lineTo(x + w / 2, yLow);
+                ctx.stroke();
+
+                ctx.fillRect(x, Math.min(yOpen, yClose), w, Math.abs(yClose - yOpen) || 1);
+            }
+
+            for (let i = 0; i < activeTrades.length; i++) {
+                let trade = activeTrades[i];
+                if (trade.asset !== activeAsset) continue;
+                
+                let yTrade = canvas.height - ((trade.entryPrice - minPrice) / range) * (canvas.height - 40) - 20;
+                let color = trade.direction === 'HIGHER' ? '#00c853' : '#ff3d57';
+                
+                ctx.strokeStyle = color;
+                ctx.setLineDash([6, 4]);
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, yTrade);
+                ctx.lineTo(canvas.width - rightPadding, yTrade);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                let label = trade.direction === 'HIGHER' ? 'CALL' : 'PUT';
+                ctx.fillStyle = color;
+                ctx.fillRect(canvas.width - rightPadding + 5, yTrade - 10, 45, 20);
+                ctx.fillStyle = '#fff';
+                ctx.font = "bold 11px Inter, sans-serif";
+                ctx.fillText(label, canvas.width - rightPadding + 12, yTrade + 4);
+            }
+        }
+
+        function simulateMarket() {
+            let activeData = assetsData[activeAsset];
+            let wasAtEnd = (startIndex + visibleCount >= activeData.candles.length);
+            let activeChange = 0;
+
+            for (let key in assetsData) {
+                let data = assetsData[key];
+                let config = assetsConfig[key];
+                let lastCandle = data.candles[data.candles.length - 1];
+                let mChange = (Math.random() - 0.5) * config.vol * 2;
+                let newPrice = lastCandle.close + mChange;
+                
+                lastCandle.close = newPrice;
+                lastCandle.high = Math.max(lastCandle.high, newPrice);
+                lastCandle.low = Math.min(lastCandle.low, newPrice);
+                data.currentPrice = newPrice;
+
+                if (Math.random() > 0.75) {
+                    data.candles.push({ open: newPrice, close: newPrice, high: newPrice, low: newPrice });
+                    if (data.candles.length > 500) data.candles.shift();
+                }
+
+                if (key === activeAsset) {
+                    activeChange = mChange;
+                }
+            }
+
+            if (wasAtEnd) {
+                startIndex = Math.max(0, activeData.candles.length - visibleCount);
+            }
+
+            let priceEl = document.getElementById('livePrice');
+            if (priceEl) {
+                priceEl.innerText = activeData.currentPrice.toFixed(assetsConfig[activeAsset].decimals);
+                priceEl.style.color = activeChange > 0 ? '#00c853' : '#ff3d57';
+                setTimeout(function() { priceEl.style.color = 'var(--text-main)'; }, 100);
+            }
+
+            updateScrollbar();
+            drawChart();
+            checkExpirations();
+        }
+
+        function setupChartEvents() {
+            canvas.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                let activeData = assetsData[activeAsset];
+                let wasAtEnd = (startIndex + visibleCount >= activeData.candles.length);
+                
+                if (e.deltaY < 0) visibleCount = Math.max(10, visibleCount - 2);
+                else visibleCount = Math.min(150, visibleCount + 2);
+                
+                if (wasAtEnd) startIndex = Math.max(0, activeData.candles.length - visibleCount);
+                else startIndex = Math.min(startIndex, activeData.candles.length - visibleCount);
+                
+                updateScrollbar();
+                drawChart();
+            }, { passive: false });
+
+            let isDragging = false;
+            let startMouseX;
+            let startIndexOnDragStart;
+
+            canvas.addEventListener('mousedown', function(e) {
+                if (activeTool !== 'cursor') return;
+                isDragging = true;
+                startMouseX = e.clientX;
+                startIndexOnDragStart = startIndex;
+                canvas.classList.add('cursor-grabbing');
+            });
+
+            canvas.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                let dx = e.clientX - startMouseX;
+                let padding = 10;
+                let rightPadding = canvas.width * 0.18;
+                let chartWidth = canvas.width - padding - rightPadding;
+                let candleWidth = chartWidth / visibleCount;
+                let moveBy = Math.round(dx / candleWidth);
+                
+                let newIndex = startIndexOnDragStart - moveBy;
+                startIndex = Math.max(0, Math.min(assetsData[activeAsset].candles.length - visibleCount, newIndex));
+                updateScrollbar();
+                drawChart();
+            });
+
+            window.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    canvas.classList.remove('cursor-grabbing');
+                }
+            });
+
+            canvas.addEventListener('touchstart', function(e) {
+                if (activeTool !== 'cursor') return;
+                isDragging = true;
+                startMouseX = e.touches[0].clientX;
+                startIndexOnDragStart = startIndex;
+            }, {passive: true});
+
+            canvas.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                let dx = e.touches[0].clientX - startMouseX;
+                let padding = 10;
+                let rightPadding = canvas.width * 0.18;
+                let chartWidth = canvas.width - padding - rightPadding;
+                let candleWidth = chartWidth / visibleCount;
+                let moveBy = Math.round(dx / candleWidth);
+                
+                let newIndex = startIndexOnDragStart - moveBy;
+                startIndex = Math.max(0, Math.min(assetsData[activeAsset].candles.length - visibleCount, newIndex));
+                updateScrollbar();
+                drawChart();
+            }, {passive: true});
+
+            canvas.addEventListener('touchend', function() { isDragging = false; });
+
+            scrollBar.addEventListener('input', function() {
+                startIndex = parseInt(scrollBar.value);
+                drawChart();
+            });
+
+            canvas.addEventListener('click', function(e) {
+                if (activeTool === 'cursor') return;
+                const rect = canvas.getBoundingClientRect();
+                const y = e.clientY - rect.top;
+                const x = e.clientX - rect.left;
+                let bounds = getViewBounds();
+                
+                if (activeTool === 'horizontal') {
+                    let price = bounds.minPrice + ((canvas.height - y - 20) / (canvas.height - 40)) * bounds.range;
+                    drawings.push({ type: 'h', price: price, asset: activeAsset });
+                } else if (activeTool === 'vertical') {
+                    let padding = 10;
+                    let rightPadding = canvas.width * 0.18;
+                    let chartWidth = canvas.width - padding - rightPadding;
+                    let candleWidth = chartWidth / visibleCount;
+                    let relIndex = Math.floor((x - padding) / candleWidth);
+                    let absIndex = startIndex + relIndex;
+                    drawings.push({ type: 'v', index: absIndex, asset: activeAsset });
+                }
+                drawChart();
+            });
+        }
+
+        function updateScrollbar() {
+            scrollBar.max = Math.max(0, assetsData[activeAsset].candles.length - visibleCount);
+            scrollBar.value = startIndex;
+        }
+
+        function updateClock() {
+            let timeEl = document.getElementById('serverTime');
+            if (timeEl) timeEl.innerText = new Date().toLocaleTimeString('pt-BR');
+        }
+
+        function updateProfitDisplay() {
+            let inv = parseCurrency(document.getElementById('investmentInput').value);
+            document.getElementById('profitDisplay').innerText = `+ R$ ${(inv * currentPayout).toFixed(2).replace('.', ',')}`;
+        }
+
+        function adjustInvestment(amount) {
+            let val = parseCurrency(document.getElementById('investmentInput').value);
+            val += amount;
+            if (val > balance) val = balance;
+            document.getElementById('investmentInput').value = val.toFixed(2).replace('.', ',');
+            formatCurrencyInput(document.getElementById('investmentInput'));
+        }
+
+        function setMaxInvestment() {
+            document.getElementById('investmentInput').value = balance.toFixed(2).replace('.', ',');
+            formatCurrencyInput(document.getElementById('investmentInput'));
+        }
+
+        function setExpiration(seconds, btn) {
+            currentExpiration = seconds;
+            let btns = document.querySelectorAll('.time-btn');
+            for (let i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+            btn.classList.add('active');
+        }
+
+        function executeTrade(direction) {
+            let inv = parseCurrency(document.getElementById('investmentInput').value);
+            if (inv <= 0 || inv > balance) {
+                showToast("Valor inválido ou saldo insuficiente", "error");
+                return;
+            }
+
+            balance -= inv;
+            updateBalance();
+
+            let trade = {
+                id: tradeIdCounter++,
+                asset: activeAsset,
+                direction: direction,
+                entryPrice: assetsData[activeAsset].currentPrice,
+                investment: inv,
+                expirySeconds: currentExpiration,
+                startTime: Date.now(),
+                expiryTime: Date.now() + (currentExpiration * 1000)
+            };
+            activeTrades.push(trade);
+            renderOpenTrades();
+            drawChart();
+            showToast(`Ordem ${direction} aberta!`, "success");
+        }
+
+
+
+
+
+               
+
+
+
+
+
+
+
+
+        function checkExpirations() {
+            let now = Date.now();
+            let expiredTrades = [];
+            
+            for (let i = 0; i < activeTrades.length; i++) {
+                if (now >= activeTrades[i].expiryTime) {
+                    expiredTrades.push(activeTrades[i]);
+                }
+            }
+            
+            if (expiredTrades.length > 0) {
+                for (let i = 0; i < expiredTrades.length; i++) {
+                    let trade = expiredTrades[i];
+                    let exitPrice = assetsData[trade.asset].currentPrice;
+                    let won = (trade.direction === 'HIGHER' && exitPrice > trade.entryPrice) || 
+                              (trade.direction === 'LOWER' && exitPrice < trade.entryPrice);
+                    
+                    if (won) {
+                        let profit = trade.investment * (assetsConfig[trade.asset].payout / 100);
+                        balance += trade.investment + profit;
+                        addHistoryItem(trade, "WIN", profit, exitPrice);
+                        if (trade.asset === activeAsset) showResultPopup(true, profit, trade, exitPrice);
+                    } else {
+                        addHistoryItem(trade, "LOSS", -trade.investment, exitPrice);
+                        if (trade.asset === activeAsset) showResultPopup(false, -trade.investment, trade, exitPrice);
+                    }
+                    
+                    // REMOVE A OPERAÇÃO IMEDIATAMENTE (Evita o bug do popup infinito)
+                    let index = activeTrades.indexOf(trade);
+                    if (index > -1) activeTrades.splice(index, 1);
+                }
+                
+                // Salva o novo saldo do cliente no banco de dados
+                updateBalance();
+                renderOpenTrades();
+                drawChart();
+                
+                // CHAMA A FUNÇÃO DO AFILIADO DEPOIS QUE TUDO FOI RESOLVIDO E SALVO
+            }
+            
+            let countdownEls = document.querySelectorAll('[data-countdown]');
+            for (let i = 0; i < countdownEls.length; i++) {
+                let id = parseInt(countdownEls[i].dataset.countdown);
+                for (let j = 0; j < activeTrades.length; j++) {
+                    if (activeTrades[j].id === id) {
+                        let remaining = Math.max(0, Math.ceil((activeTrades[j].expiryTime - now) / 1000));
+                        countdownEls[i].innerText = `${String(remaining).padStart(2, '0')}s`;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+        
+
+        function renderOpenTrades() {
+            let container = document.getElementById('openTradesContainer');
+            let visibleTrades = activeTrades.filter(t => t.asset === activeAsset);
+            if (visibleTrades.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px;">Nenhuma operação aberta</div>';
+                return;
+            }
+            let html = '';
+            for (let i = 0; i < visibleTrades.length; i++) {
+                let trade = visibleTrades[i];
+                let dec = assetsConfig[trade.asset].decimals;
+                html += `<div class="trade-card">
+                    <div class="trade-info">
+                        <span class="direction-tag ${trade.direction === 'HIGHER' ? 'dir-high' : 'dir-low'}">${trade.direction} ${trade.direction === 'HIGHER' ? '▲' : '▼'}</span>
+                        <span style="margin-top: 5px; color: var(--text-main); font-weight: 600;">R$ ${trade.investment.toFixed(2).replace('.', ',')}</span>
+                        <span>Entrada: ${trade.entryPrice.toFixed(dec)}</span>
+                    </div>
+                    <div class="trade-countdown" data-countdown="${trade.id}">${trade.expirySeconds}s</div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+               function addHistoryItem(trade, result, profitLoss, exitPrice) {
+            let time = new Date().toLocaleTimeString('pt-BR');
+            let plClass = result === 'WIN' ? 'win' : 'loss';
+            let plText = result === 'WIN' ? `+R$ ${profitLoss.toFixed(2)}` : `-R$ ${Math.abs(profitLoss).toFixed(2)}`;
+            let dec = assetsConfig[trade.asset].decimals;
+            
+            let item = { time, asset: trade.asset, dir: trade.direction, entry: trade.entryPrice.toFixed(dec), exit: exitPrice.toFixed(dec), plClass, plText };
+            historyData.push(item);
+
+            // NOVO: Salva a operação no banco de dados
+            let session = localStorage.getItem('bynex_session');
+            let trades = JSON.parse(localStorage.getItem('bynex_trades_' + session)) || [];
+            trades.push(item);
+            if (trades.length > 50) trades.shift(); // Guarda no máximo 50 operações para não pesar
+            localStorage.setItem('bynex_trades_' + session, JSON.stringify(trades));
+
+            let modalBody = document.getElementById('historyModalBody');
+            if (modalBody.children.length === 1 && modalBody.children[0].colSpan) modalBody.innerHTML = '';
+            modalBody.insertAdjacentHTML('afterbegin', `<tr>
+                <td>${time}</td><td>${trade.asset} ${trade.direction}</td>
+                <td>${trade.entryPrice.toFixed(dec)}</td><td>${exitPrice.toFixed(dec)}</td>
+                <td class="${plClass}">${plText}</td>
+            </tr>`);
+        }
+
+        function showToast(msg, type) {
+            let toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').innerText = type === 'success' ? "✅" : "❌";
+            toast.style.borderLeft = `4px solid ${type === 'success' ? 'var(--green)' : 'var(--red)'}`;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+
+        function showResultPopup(isWin, amount, trade, exitPrice) {
+            let popup = document.createElement('div');
+            popup.className = `result-popup ${isWin ? 'popup-win' : 'popup-loss'}`;
+            let icon = isWin ? 'fa-check-circle' : 'fa-times-circle';
+            let color = isWin ? 'var(--green)' : 'var(--red)';
+            let text = isWin ? 'WINN' : 'LOSS';
+            let amountText = isWin ? `+ R$ ${amount.toFixed(2)}` : `- R$ ${Math.abs(amount).toFixed(2)}`;
+            let dec = assetsConfig[trade.asset].decimals;
+            
+            popup.innerHTML = `
+                <button class="popup-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                <div class="popup-title" style="color: ${color}"><i class="fas ${icon}"></i> ${text}</div>
+                <div class="popup-amount" style="color: ${color}">${amountText}</div>
+                <div class="popup-details">${trade.asset} | Entrada: ${trade.entryPrice.toFixed(dec)} | Saída: ${exitPrice.toFixed(dec)}</div>
+            `;
+            chartContainer.appendChild(popup);
+            setTimeout(function() { if (popup.parentElement) popup.remove(); }, 10000);
+        }
+
+        function changeTab(element) {
+            document.querySelectorAll('.sidebar-icon').forEach(icon => icon.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function setTool(tool, element) {
+            activeTool = tool;
+            document.querySelectorAll('.sidebar-icon').forEach(icon => icon.classList.remove('active'));
+            element.classList.add('active');
+            canvas.className = '';
+            if (tool === 'cursor') canvas.classList.add('cursor-grab');
+            else canvas.classList.add('cursor-crosshair');
+        }
+
+        function clearDrawings() {
+            drawings = drawings.filter(d => d.asset !== activeAsset);
+            drawChart();
+            showToast("Marcações apagadas!", "success");
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        function makeDeposit() {
+            let amount = parseCurrency(document.getElementById('depositAmount').value);
+            if (amount <= 0) { showToast("Valor inválido", "error"); return; }
+            balance += amount;
+            updateBalance();
+            closeModal('depositModal');
+            showToast(`Depósito de R$ ${amount.toFixed(2).replace('.', ',')} realizado!`, "success");
+            document.getElementById('depositAmount').value = '';
+        }
+
+                       function requestWithdraw() {
+            let amount = parseCurrency(document.getElementById('wdAmount').value);
+            let pix = document.getElementById('wdPix').value.trim();
+            let name = document.getElementById('wdName').value.trim();
+
+            if (amount <= 0 || amount > balance) { showToast("Saldo insuficiente ou valor inválido", "error"); return; }
+            if (!pix || !name) { showToast("Preencha todos os dados", "error"); return; }
+
+            balance -= amount;
+            updateBalance();
+            
+            let date = new Date().toLocaleString('pt-BR');
+            let wdId = 'SAQ' + Date.now();
+            
+            // 1. SALVA NO BANCO DE DADOS PARA O ADMIN VER
+            let withdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            withdrawals.push({
+                id: wdId,
+                userId: localStorage.getItem('bynex_session'),
+                amount: amount,
+                pix: pix,
+                name: name,
+                date: date,
+                status: 'Pendente'
+            });
+            localStorage.setItem('bynex_withdrawals', JSON.stringify(withdrawals));
+
+            // 2. MOSTRA NO HISTÓRICO DO PRÓPRIO CLIENTE
+            addWithdrawHistoryItem(date, amount, pix, name);
+
+            document.getElementById('withdrawBody').innerHTML = `
+                <div style="text-align: center; padding: 40px 10px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--accent); margin-bottom: 20px;"></i>
+                    <h3 style="color: var(--text-main); margin-bottom: 10px;">Saque em Processamento</h3>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 5px;">R$ ${amount.toFixed(2).replace('.', ',')} via PIX para ${name}.</p>
+                    <p style="color: var(--accent); font-size: 12px;">O valor será creditado em até 3 dias úteis.</p>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                closeModal('withdrawModal');
+                showToast("Saque solicitado com sucesso!", "success");
+                document.getElementById('withdrawBody').innerHTML = `
+                    <div>
+                        <div class="input-label">Valor do Saque</div>
+                        <div class="modal-input-group">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="text" id="wdAmount" class="modal-input" placeholder="0,00" oninput="formatCurrencyInput(this)">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-label">Chave PIX</div>
+                        <div class="modal-input-group">
+                            <i class="fas fa-key"></i>
+                            <input type="text" id="wdPix" class="modal-input" placeholder="CPF, E-mail ou Celular">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-label">Nome do Titular</div>
+                        <div class="modal-input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="wdName" class="modal-input" placeholder="Nome Completo">
+                        </div>
+                    </div>
+                    <button class="modal-btn" onclick="requestWithdraw()">Solicitar Saque</button>
+                    <div class="modal-info">O valor será creditado em até 3 dias úteis.</div>
+                `;
+            }, 3000);
+        }
+
+        // FUNÇÃO QUE DESENHA O HISTÓRICO NA TELA DO CLIENTE
+        function addWithdrawHistoryItem(date, amount, pix, name) {
+            let body = document.getElementById('wdHistoryBody');
+            if (body.children.length === 1 && body.children[0].colSpan) body.innerHTML = '';
+            body.insertAdjacentHTML('afterbegin', `
+                <tr>
+                    <td>${date}</td>
+                    <td>R$ ${amount.toFixed(2).replace('.', ',')}</td>
+                    <td>${pix}<br><span style="color: var(--text-muted); font-size: 11px;">${name}</span></td>
+                    <td class="status-processing"><i class="fas fa-spinner fa-spin"></i> Processando <br><span style="color: var(--text-muted); font-size: 10px; font-weight: normal;">3 dias úteis</span></td>
+                </tr>
+            `);
+        }
+
+        function addWithdrawHistoryItem(date, amount, pix, name) {
+            let body = document.getElementById('wdHistoryBody');
+            if (body.children.length === 1 && body.children[0].colSpan) body.innerHTML = '';
+            body.insertAdjacentHTML('afterbegin', `
+                <tr>
+                    <td>${date}</td>
+                    <td>R$ ${amount.toFixed(2).replace('.', ',')}</td>
+                    <td>${pix}<br><span style="color: var(--text-muted); font-size: 11px;">${name}</span></td>
+                    <td class="status-processing"><i class="fas fa-spinner fa-spin"></i> Processando <br><span style="color: var(--text-muted); font-size: 10px; font-weight: normal;">3 dias úteis</span></td>
+                </tr>
+            `);
+        }
+
+        function handleChatKeyPress(e) { if (e.key === 'Enter') sendChatMessage(); }
+        
+        function sendChatMessage() {
+            let input = document.getElementById('chatInput');
+            let msg = input.value.trim();
+            if (!msg) return;
+            
+            addChatMessage('user', msg);
+            input.value = '';
+            
+            let lowerMsg = msg.toLowerCase();
+            
+            setTimeout(() => {
+                if (lowerMsg === 'recarregar') {
+                    addChatMessage('bot', 'Perfeito! Quanto você quer recarregar? Digite apenas o valor (ex: 500).');
+                    chatState = 'waiting_amount';
+                } else if (chatState === 'waiting_amount') {
+                    let amount = parseCurrency(lowerMsg);
+                    if (!isNaN(amount) && amount > 0) {
+                        balance += amount;
+                        updateBalance();
+                        addChatMessage('bot', `Pronto! Recarga de R$ ${amount.toFixed(2).replace('.', ',')} adicionada ao seu saldo com sucesso. 🚀`);
+                        chatState = 'idle';
+                    } else {
+                        addChatMessage('bot', 'Isso não parece um valor válido. Tente novamente digitando "recarregar".');
+                        chatState = 'idle';
+                    }
+                } else {
+                    addChatMessage('bot', 'No momento estamos fora do horário de atendimento ao vivo. Por favor, deixe sua mensagem que um de nossos consultores entrará em contato em breve!');
+                }
+            }, 600);
+        }
+
+        function addChatMessage(sender, text) {
+            let container = document.getElementById('chatMessages');
+            let div = document.createElement('div');
+            div.className = `chat-msg ${sender}`;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearChatHistory() {
+            let container = document.getElementById('chatMessages');
+            container.innerHTML = '<div class="chat-msg bot">Seu histórico foi apagado com sucesso, ainda com dúvidas? </div>';
+            chatState = 'idle';
+        }
+
+        function toggleTheme() {
+            isLightTheme = !isLightTheme;
+            let icon = document.getElementById('themeIcon');
+            if (isLightTheme) {
+                document.body.classList.add('light-theme');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                document.body.classList.remove('light-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+            drawChart();
+        }
+
+        // NOVO: Controla o menu do perfil
+        function toggleProfileMenu(e) {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('show');
+            let assetDrop = document.getElementById('assetDropdown');
+            if(assetDrop) assetDrop.classList.remove('show');
+        }
+
+        function toggleAssetDropdown(e) {
+            e.stopPropagation();
+            document.getElementById('assetDropdown').classList.toggle('show');
+            let profileDrop = document.getElementById('profileDropdown');
+            if(profileDrop) profileDrop.classList.remove('show');
+        }
+        
+        window.onclick = function(e) {
+            if (!e.target.matches('.asset-selector') && !e.target.closest('.asset-selector')) {
+                let dropdown = document.getElementById('assetDropdown');
+                if (dropdown) dropdown.classList.remove('show');
+            }
+            if (!e.target.matches('.profile-selector') && !e.target.closest('.profile-selector')) {
+                let profileDrop = document.getElementById('profileDropdown');
+                if (profileDrop) profileDrop.classList.remove('show');
+            }
+        }
+
+        function switchAsset(key, name, payout) {
+            activeAsset = key;
+            currentPayout = payout / 100;
+            document.getElementById('assetName').innerText = name;
+            document.getElementById('payoutBadge').innerText = `+${payout}%`;
+            document.getElementById('assetDropdown').classList.remove('show');
+            
+            startIndex = Math.max(0, assetsData[activeAsset].candles.length - visibleCount);
+            updateScrollbar();
+            updateProfitDisplay();
+            renderOpenTrades();
+            drawChart();
+        }
+
+        function logout() {
+            localStorage.removeItem('bynex_session');
+            window.location.href = 'login.html';
+        }
+
+        function updateBalance() {
+            document.getElementById('balanceDisplay').innerText = balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            let session = localStorage.getItem('bynex_session');
+            let users = JSON.parse(localStorage.getItem('bynex_users')) || [];
+            let user = users.find(u => u.id === session);
+            if (user) {
+                user.balance = balance;
+                localStorage.setItem('bynex_users', JSON.stringify(users));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let session = localStorage.getItem('bynex_session');
+            if(session) {
+                let idEl = document.getElementById('userIdDisplay');
+                if(idEl) idEl.innerText = 'ID: ' + session;
+            }
+        });
+
+
+
+
+
+
+
+
+        // NOVO: Carrega o histórico do banco de dados ao abrir ou dar F5
+        function loadUserHistory() {
+            let session = localStorage.getItem('bynex_session');
+            
+            // 1. Carrega Saques
+            let allWithdrawals = JSON.parse(localStorage.getItem('bynex_withdrawals')) || [];
+            let userWithdrawals = allWithdrawals.filter(w => w.userId === session);
+            let wdBody = document.getElementById('wdHistoryBody');
+            if (userWithdrawals.length > 0 && wdBody) {
+                wdBody.innerHTML = '';
+                userWithdrawals.reverse().forEach(w => {
+                    let icon = w.status === 'Pendente' ? 'fa-spinner fa-spin' : (w.status === 'Aprovado' ? 'fa-check' : 'fa-times');
+                    let statusClass = w.status === 'Pendente' ? 'status-processing' : (w.status === 'Aprovado' ? 'win' : 'loss');
+                    let statusText = w.status === 'Pendente' ? 'Processando <br><span style="color: var(--text-muted); font-size: 10px; font-weight: normal;">3 dias úteis</span>' : w.status;
+                    wdBody.insertAdjacentHTML('afterbegin', `
+                        <tr>
+                            <td>${w.date}</td>
+                            <td>R$ ${w.amount.toFixed(2).replace('.', ',')}</td>
+                            <td>${w.pix}<br><span style="color: var(--text-muted); font-size: 11px;">${w.name}</span></td>
+                            <td class="${statusClass}"><i class="fas ${icon}"></i> ${statusText}</td>
+                        </tr>
+                    `);
+                });
+            }
+
+            // 2. Carrega Operações
+            let trades = JSON.parse(localStorage.getItem('bynex_trades_' + session)) || [];
+            let tradeBody = document.getElementById('historyModalBody');
+            if (trades.length > 0 && tradeBody) {
+                tradeBody.innerHTML = '';
+                trades.reverse().forEach(t => {
+                    tradeBody.insertAdjacentHTML('afterbegin', `<tr>
+                        <td>${t.time}</td><td>${t.asset} ${t.dir}</td>
+                        <td>${t.entry}</td><td>${t.exit}</td>
+                        <td class="${t.plClass}">${t.plText}</td>
+                    </tr>`);
+                });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
