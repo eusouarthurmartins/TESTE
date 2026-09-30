@@ -8,133 +8,263 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e11'/><text x='50' y='75' font-size='70' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%23f0b90b'>B</text></svg>">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --bg-light: #f4f7f6; --bg-card: #ffffff; --text-main: #1c1e21; --text-muted: #65676b; 
-            --accent: #f0b90b; --accent-dark: #d9a700; --border: #e3e5e8; --green: #00c853; --red: #ff3d57; --blue: #1877f2;
+        :root {
+            --bg-dark: #0b0f19;
+            --bg-panel: #111726;
+            --bg-sidebar: #080b12;
+            --bg-card: #151c2e;
+            --bg-input: #1c2438;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --accent: #10b981; /* Verde esmeralda */
+            --accent-hover: #059669;
+            --border: #1e293b;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-light); color: var(--text-main); }
+        html, body { height: 100%; }
+        body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
 
-        .admin-header { background: var(--bg-card); padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .admin-logo { font-weight: 800; font-size: 20px; } .admin-logo span { color: var(--accent); }
-        .btn-link { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 13px; }
+        /* Login Area */
+        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: radial-gradient(circle at top right, #1a2b45, var(--bg-dark)); }
+        .login-card { background: var(--bg-panel); padding: 40px; border-radius: 16px; width: 400px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; border: 1px solid var(--border); }
+        .login-logo { font-weight: 800; font-size: 28px; margin-bottom: 10px; color: #fff; } .login-logo span { color: var(--accent); }
+        .login-sub { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
+        .input-pass { width: 100%; padding: 15px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.2s; }
+        .input-pass:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn-pass:hover { background: var(--accent-hover); }
 
-        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-card { background: var(--bg-card); padding: 40px; border-radius: 20px; width: 400px; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.05); text-align: center; }
-        .input-pass { width: 100%; padding: 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; margin-bottom: 15px; outline: none; }
-        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        /* App Layout */
+        .app-layout { display: flex; min-height: 100vh; }
 
-        .admin-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .metric-card { background: var(--bg-card); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-        .metric-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .metric-icon.blue { background: #e7f0ff; color: var(--blue); } .metric-icon.yellow { background: #fff8e1; color: var(--accent-dark); }
-        .metric-icon.green { background: #e6fff4; color: var(--green); } .metric-icon.red { background: #ffeef0; color: var(--red); }
-        .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 2px; }
-        .metric-info h3 { font-size: 18px; }
+        /* Sidebar */
+        .sidebar { width: 250px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; transition: transform 0.3s ease; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        .sidebar-logo { font-weight: 800; font-size: 22px; color: #fff; } .sidebar-logo span { color: var(--accent); }
+        .sidebar-nav { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; }
+        .nav-item i { width: 20px; text-align: center; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
+        .nav-item.active { background: rgba(16, 185, 129, 0.05); color: var(--accent); border-left-color: var(--accent); }
+        .sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
+        .btn-logout { width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--red); font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
 
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 250px; padding: 30px; transition: margin 0.3s; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-title h1 { font-size: 24px; font-weight: 700; }
+        .header-title p { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+        .hamburger { display: none; background: none; border: none; color: var(--text-main); font-size: 24px; cursor: pointer; }
+
+        /* Cards */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; transition: 0.2s; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .metric-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .metric-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
+        .metric-icon.yellow { background: rgba(245, 158, 11, 0.1); color: var(--yellow); }
+        .metric-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--green); }
+        .metric-icon.red { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+        .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-info h3 { font-size: 22px; font-weight: 700; }
+
+        /* Boxes (Link & Payment) */
+        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; }
+        .info-box h3 { font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .info-box p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
+        .link-url { background: var(--bg-input); padding: 12px 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: var(--blue); border: 1px dashed var(--border); word-break: break-all; margin-bottom: 15px; }
+        .btn-link { background: var(--accent); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-link:hover { background: var(--accent-hover); }
+        .input-custom { width: 100%; padding: 12px 15px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); outline: none; font-size: 14px; }
+        .input-custom:focus { border-color: var(--accent); }
+
+        /* Tables */
         .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px; display: flex; align-items: center; gap: 10px; }
-        .link-box { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .link-url { background: #f7f9fa; padding: 10px 15px; border-radius: 8px; font-family: monospace; font-size: 14px; color: var(--blue); border: 1px dashed var(--border); word-break: break-all; }
-
-        .table-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 15px; }
+        .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 30px; }
+        .table-toolbar { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 15px; }
         .search-box { position: relative; flex: 1; max-width: 300px; }
-        .search-box input { width: 100%; padding: 8px 12px 8px 35px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+        .search-box input { width: 100%; padding: 10px 12px 10px 35px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); font-size: 13px; outline: none; }
+        .search-box input:focus { border-color: var(--accent); }
         .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; }
 
-        .table-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 15px; }
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f7f9fa; padding: 10px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-        td { padding: 10px 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        th { background: var(--bg-input); padding: 12px 15px; text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 600; }
+        td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-main); }
         tr:last-child td { border-bottom: none; }
-        .badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .badge-positive { background: #e6fff4; color: var(--green); } .badge-negative { background: #ffeef0; color: var(--red); }
+        tr:hover { background: rgba(255,255,255,0.02); }
 
-        @media (max-width: 768px) { .admin-container { padding: 20px 15px; } .admin-header { padding: 12px 20px; } .table-toolbar { flex-direction: column; align-items: stretch; } .search-box { max-width: 100%; } }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+        .badge-positive { background: rgba(16, 185, 129, 0.1); color: var(--green); }
+        .badge-negative { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .grid-2-cols { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+            .main-content { margin-left: 0; padding: 20px; }
+            .hamburger { display: block; }
+            .header-title h1 { font-size: 20px; }
+            .metric-card { padding: 15px; }
+            .metric-info h3 { font-size: 18px; }
+            .table-toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Login Area -->
     <div id="loginArea" class="login-area">
         <div class="login-card">
-            <div class="admin-logo" style="margin-bottom: 20px;">BYNEX <span>Afiliados</span></div>
-            <h1>Painel do Afiliado</h1>
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Digite o seu ID de usuário para acessar.</p>
+            <div class="login-logo">BYNEX <span>Afiliados</span></div>
+            <h1 style="font-size: 22px; margin-bottom: 10px;">Bem-vindo de volta</h1>
+            <p class="login-sub">Digite o seu ID de usuário para acessar o painel.</p>
             <input type="text" class="input-pass" id="affId" placeholder="Ex: BYX12345" onkeyup="if(event.key==='Enter') checkAffiliate()">
             <button class="btn-pass" onclick="checkAffiliate()">Acessar Painel</button>
         </div>
     </div>
 
-    <div id="adminArea" style="display:none;">
-        <header class="admin-header">
-            <div class="admin-logo">BYNEX <span>Afiliados</span></div>
-            <button class="btn-link" onclick="logoutAff()">Sair</button>
-        </header>
-
-        <div class="admin-container">
-            <div class="metrics-grid">
-                <div class="metric-card"><div class="metric-icon blue"><i class="fas fa-users"></i></div><div class="metric-info"><span>Total de Cadastros</span><h3 id="mTotalUsers">0</h3></div></div>
-                <div class="metric-card"><div class="metric-icon yellow"><i class="fas fa-coins"></i></div><div class="metric-info"><span>Depósitos Aprovados</span><h3 id="mTotalDep">R$ 0,00</h3></div></div>
-                <div class="metric-card"><div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div><div class="metric-info"><span>Saldo a Receber (Aberto)</span><h3 id="mPending" style="color: var(--green);">R$ 0,00</h3></div></div>
-                <div class="metric-card"><div class="metric-icon red"><i class="fas fa-check-circle"></i></div><div class="metric-info"><span>Total Já Recebido</span><h3 id="mTotalReceived">R$ 0,00</h3></div></div>
+    <!-- App Layout -->
+    <div id="adminArea" style="display:none;" class="app-layout">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">BYNEX <span>AFF</span></div>
             </div>
-
-            <div class="link-box">
-                <div style="flex: 1;">
-                    <h3 style="font-size: 16px; margin-bottom: 5px;">Seu Link de Divulgação</h3>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Divulgue este link. Quem se cadastrar por ele será seu indicado.</p>
-                    <div class="link-url" id="affLink" style="margin-bottom: 10px;">https://...</div>
-                    <button class="btn-link" onclick="copyLink()"><i class="fas fa-copy"></i> Copiar Link</button>
-                </div>
+            <nav class="sidebar-nav">
+                <a href="#sec-dashboard" class="nav-item active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="#sec-links" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-link"></i> Divulgação & PIX</a>
+                <a href="#sec-clients" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-users"></i> Seus Clientes</a>
+                <a href="#sec-history" class="nav-item" onclick="setActiveNav(this)"><i class="fas fa-history"></i> Pagamentos</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logoutAff()"><i class="fas fa-sign-out-alt"></i> Sair da Conta</button>
             </div>
+        </aside>
 
-            <div class="link-box">
-                <div style="flex: 1;">
-                    <h3 style="font-size: 16px; margin-bottom: 5px;">Dados de Pagamento</h3>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
-                        Chave PIX atual: <strong id="affPixDisplay" style="color: var(--text-main);">Não cadastrada</strong><br>
-                        Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--accent-dark);">A definir pela administração</strong>
-                    </p>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="pixInput" placeholder="Digite sua Chave PIX (CPF, Email, Celular...)" style="flex: 1; padding: 10px 15px; background: #f7f9fa; border: 1px solid var(--border); border-radius: 8px; outline: none;">
-                        <button class="btn-link" onclick="savePix()"><i class="fas fa-save"></i> Salvar PIX</button>
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="main-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                    <div class="header-title">
+                        <h1>Painel do Afiliado</h1>
+                        <p>Acompanhe seus indicados e comissões em tempo real.</p>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <h2 class="section-title"><i class="fas fa-user-friends" style="color: #1877f2; font-size: 16px;"></i> Seus Clientes</h2>
-            <div class="table-toolbar">
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClients" placeholder="Buscar por ID do cliente..." oninput="renderClients()"></div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>ID Cliente</th><th>Nome</th><th>Depósitos Reais</th><th>Saques</th><th>Saldo Atual</th><th>Lucro/Prejuízo</th><th>Sua Comissão</th></tr></thead>
-                        <tbody id="clientsBody"></tbody>
-                    </table>
+            <!-- Section: Dashboard -->
+            <section id="sec-dashboard">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i class="fas fa-users"></i></div>
+                        <div class="metric-info"><span>Total Cadastros</span><h3 id="mTotalUsers">0</h3></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon yellow"><i class="fas fa-coins"></i></div>
+                        <div class="metric-info"><span>Depósitos Aprovados</span><h3 id="mTotalDep">R$ 0,00</h3></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="metric-info"><span>Saldo a Receber</span><h3 id="mPending" style="color: var(--green);">R$ 0,00</h3></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon red"><i class="fas fa-check-circle"></i></div>
+                        <div class="metric-info"><span>Total Já Recebido</span><h3 id="mTotalReceived">R$ 0,00</h3></div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Histórico de Pagamentos -->
-            <h2 class="section-title"><i class="fas fa-history" style="color: var(--green); font-size: 16px;"></i> Histórico de Pagamentos</h2>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table>
-                        <thead><tr><th>Data do Pagamento</th><th>Valor Pago</th><th>Status</th></tr></thead>
-                        <tbody id="historyBody">
-                            <tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>
-                        </tbody>
-                    </table>
+            <!-- Section: Links & Payment -->
+            <section id="sec-links">
+                <div class="grid-2-cols">
+                    <div class="info-box">
+                        <h3><i class="fas fa-share-alt" style="color: var(--blue);"></i> Link de Divulgação</h3>
+                        <p>Divulgue este link. Quem se cadastrar por ele será seu indicado automaticamente.</p>
+                        <div class="link-url" id="affLink">https://...</div>
+                        <button class="btn-link" onclick="copyLink()"><i class="fas fa-copy"></i> Copiar Link</button>
+                    </div>
+
+                    <div class="info-box">
+                        <h3><i class="fas fa-wallet" style="color: var(--accent);"></i> Dados de Pagamento</h3>
+                        <p>
+                            Chave PIX atual: <strong id="affPixDisplay" style="color: #fff;">Não cadastrada</strong><br>
+                            Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--yellow);">A definir</strong>
+                        </p>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="pixInput" class="input-custom" placeholder="Sua Chave PIX (CPF, Email, Celular)">
+                            <button class="btn-link" onclick="savePix()"><i class="fas fa-save"></i> Salvar</button>
+                        </div>
+                    </div>
                 </div>
+            </section>
+
+            <!-- Section: Clients -->
+            <section id="sec-clients">
+                <h2 class="section-title"><i class="fas fa-user-friends" style="color: var(--blue); font-size: 18px;"></i> Seus Clientes</h2>
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchClients" placeholder="Buscar por ID do cliente..." oninput="renderClients()"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>ID Cliente</th><th>Nome</th><th>Depósitos Reais</th><th>Saques</th><th>Saldo Atual</th><th>Lucro/Prejuízo</th><th>Sua Comissão</th></tr></thead>
+                            <tbody id="clientsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: History -->
+            <section id="sec-history">
+                <h2 class="section-title"><i class="fas fa-history" style="color: var(--green); font-size: 18px;"></i> Histórico de Pagamentos</h2>
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Data do Pagamento</th><th>Valor Pago</th><th>Status</th></tr></thead>
+                            <tbody id="historyBody">
+                                <tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted);">Nenhum pagamento recebido ainda.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <div style="margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 20px;">
+                BYNEX PRO AFFILIATES &copy; 2024 - Sistema de Gestão de Indicações
             </div>
         </div>
     </div>
 
     <script>
+        // NOVAS FUNÇÕES DE UI (NÃO AFETAM A LÓGICA)
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        function setActiveNav(el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+        }
+
+        // LÓGICA ORIGINAL INTACTA
         let currentAffId = '';
 
         function checkAffiliate() {
@@ -144,7 +274,7 @@
                 currentAffId = id;
                 localStorage.setItem('bynex_aff_session', id);
                 document.getElementById('loginArea').style.display = 'none';
-                document.getElementById('adminArea').style.display = 'block';
+                document.getElementById('adminArea').style.display = 'flex';
                 loadAffData();
             } else {
                 alert('ID de afiliado não encontrado!');
