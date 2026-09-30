@@ -12,21 +12,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-panel: #1e293b;
-            --bg-sidebar: #111827;
-            --bg-card: #1e293b;
-            --bg-input: #0f172a;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #10b981;
-            --accent-hover: #059669;
-            --border: #334155;
-            --green: #10b981;
-            --red: #ef4444;
-            --yellow: #f59e0b;
-            --blue: #3b82f6;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --bg-dark: #0b0e11;
+            --bg-panel: #151a21;
+            --bg-sidebar: #0e1217;
+            --bg-card: #151a21;
+            --bg-input: #0b0e11;
+            --text-main: #eaecef;
+            --text-muted: #848e9c;
+            --accent: #f0b90b;
+            --accent-dark: #d9a700;
+            --border: #2b313a;
+            --green: #00c853;
+            --red: #ff3d57;
+            --blue: #1877f2;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -34,14 +33,14 @@
         body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
 
         /* Login Area */
-        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: radial-gradient(circle at top right, #1e293b, var(--bg-dark)); }
-        .login-card { background: var(--bg-panel); padding: 40px; border-radius: 16px; width: 400px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; border: 1px solid var(--border); }
+        .login-area { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-dark); }
+        .login-card { background: var(--bg-panel); padding: 40px; border-radius: 16px; width: 400px; max-width: 90%; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); }
         .login-logo { font-weight: 800; font-size: 28px; margin-bottom: 10px; color: #fff; } .login-logo span { color: var(--accent); }
         .login-sub { color: var(--text-muted); margin-bottom: 30px; font-size: 14px; }
         .input-pass { width: 100%; padding: 15px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text-main); font-size: 16px; margin-bottom: 15px; outline: none; transition: 0.2s; }
-        .input-pass:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
-        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .btn-pass:hover { background: var(--accent-hover); }
+        .input-pass:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1); }
+        .btn-pass { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn-pass:hover { background: var(--accent-dark); }
 
         /* App Layout */
         .app-layout { display: flex; min-height: 100vh; }
@@ -54,10 +53,10 @@
         .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; cursor: pointer; }
         .nav-item i { width: 20px; text-align: center; }
         .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); }
-        .nav-item.active { background: rgba(16, 185, 129, 0.05); color: var(--accent); border-left-color: var(--accent); }
+        .nav-item.active { background: rgba(240, 185, 11, 0.05); color: var(--accent); border-left-color: var(--accent); }
         .sidebar-footer { padding: 20px; border-top: 1px solid var(--border); }
         .btn-logout { width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--red); font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); }
+        .btn-logout:hover { background: rgba(255, 61, 87, 0.1); }
 
         /* Main Content */
         .main-content { flex: 1; margin-left: 250px; padding: 30px; transition: margin 0.3s; }
@@ -71,10 +70,10 @@
         .metric-card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; transition: 0.2s; }
         .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
         .metric-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .metric-icon.blue { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
-        .metric-icon.yellow { background: rgba(245, 158, 11, 0.1); color: var(--yellow); }
-        .metric-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--green); }
-        .metric-icon.red { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+        .metric-icon.blue { background: rgba(24, 119, 242, 0.1); color: var(--blue); }
+        .metric-icon.yellow { background: rgba(240, 185, 11, 0.1); color: var(--accent); }
+        .metric-icon.green { background: rgba(0, 200, 83, 0.1); color: var(--green); }
+        .metric-icon.red { background: rgba(255, 61, 87, 0.1); color: var(--red); }
         .metric-info span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .metric-info h3 { font-size: 22px; font-weight: 700; }
 
@@ -84,8 +83,8 @@
         .info-box h3 { font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .info-box p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; }
         .link-url { background: var(--bg-input); padding: 12px 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: var(--blue); border: 1px dashed var(--border); word-break: break-all; margin-bottom: 15px; }
-        .btn-link { background: var(--accent); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 13px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-link:hover { background: var(--accent-hover); }
+        .btn-link { background: var(--accent); color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 13px; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-link:hover { background: var(--accent-dark); }
         .input-custom { width: 100%; padding: 12px 15px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); outline: none; font-size: 14px; }
         .input-custom:focus { border-color: var(--accent); }
 
@@ -106,8 +105,12 @@
         tr:hover { background: rgba(255,255,255,0.02); }
 
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .badge-positive { background: rgba(16, 185, 129, 0.1); color: var(--green); }
-        .badge-negative { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+        .badge-positive { background: rgba(0, 200, 83, 0.1); color: var(--green); }
+        .badge-negative { background: rgba(255, 61, 87, 0.1); color: var(--red); }
+
+        /* WhatsApp Floating Button */
+        .wa-fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background-color: #25D366; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 999; text-decoration: none; transition: transform 0.2s; }
+        .wa-fab:hover { transform: scale(1.1); color: #fff; }
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -123,6 +126,7 @@
             .metric-info h3 { font-size: 18px; }
             .table-toolbar { flex-direction: column; align-items: stretch; }
             .search-box { max-width: 100%; }
+            .wa-fab { width: 50px; height: 50px; font-size: 24px; bottom: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -146,7 +150,7 @@
             <!-- Sidebar -->
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-header">
-                    <div class="sidebar-logo">BYNEX <span>AFF</span></div>
+                    <div class="sidebar-logo">BYNEX <span>PRO</span></div>
                 </div>
                 <nav class="sidebar-nav">
                     <a class="nav-item active" onclick="setActiveNav(this)"><i class="fas fa-th-large"></i> Dashboard</a>
@@ -207,7 +211,7 @@
                             <h3><i class="fas fa-wallet" style="color: var(--accent);"></i> Dados de Pagamento</h3>
                             <p>
                                 Chave PIX atual: <strong id="affPixDisplay" style="color: #fff;">Não cadastrada</strong><br>
-                                Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--yellow);">A definir</strong>
+                                Próximo Pagamento: <strong id="affDateDisplay" style="color: var(--accent);">A definir</strong>
                             </p>
                             <div style="display: flex; gap: 10px;">
                                 <input type="text" id="pixInput" class="input-custom" placeholder="Sua Chave PIX (CPF, Email, Celular)">
@@ -254,6 +258,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20suporte%20no%20Painel%20de%20Afiliados%20Bynex" target="_blank" class="wa-fab" title="Suporte WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script>
         // FUNÇÕES DE UI (NÃO AFETAM A LÓGICA DE NEGÓCIO)
